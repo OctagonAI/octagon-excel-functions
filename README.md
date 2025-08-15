@@ -73,11 +73,10 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
    ```bash
    npm install
    ```
-3. Make sure to use the `manifest-local.xml` file to redirect development to you local server
 
-4. Start the dev server and sideload the add-in in Excel:
+3. Start the dev server and sideload the add-in in Excel:
    ```bash
-   npm start
+   npm start:dev # this points to the manifest-local.xml (local server)
    ```
 
 This command:
@@ -88,7 +87,6 @@ This command:
 ### Development Workflow
 
 - **Development Build**: `npm run build:dev`
-- **Production Build**: `npm run build`
 - **Watch Mode**: `npm run watch`
 - **Dev Server**: `npm run dev-server`
 - **Linting**: `npm run lint` or `npm run lint:fix`
