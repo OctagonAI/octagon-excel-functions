@@ -1,0 +1,571 @@
+/* 
+ * Octagon Excel Add-in Styles
+ */
+
+   html,
+   body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+   }
+
+   /* Common Elements */
+
+   ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+   }
+
+   a {
+      color: #0078d4;
+      text-decoration: none;
+   }
+
+   a:hover {
+      text-decoration: underline;
+   }
+
+   /* Header */
+
+   .octagon-header {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+   }
+
+   .octagon-header h1 {
+      margin: 8px 0 0 0;
+   }
+
+   /* Main Content */
+
+   .main-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+   }
+
+   .content-container {
+      max-width: 100%;
+   }
+
+   .description {
+      margin-bottom: 24px;
+      color: #333;
+      line-height: 1.5;
+   }
+
+   /* Authentication Form */
+
+   .auth-container {
+      background-color: #f9f9f9;
+      border-radius: 4px;
+      padding: 20px;
+      margin-top: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+   }
+
+   .form-group {
+      margin-bottom: 16px;
+   }
+
+   .ms-TextField-field {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      font-size: 14px;
+      box-sizing: border-box;
+   }
+
+   .error-message {
+      color: #a80000;
+      font-size: 12px;
+      margin-top: 4px;
+   }
+
+   .button-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+   }
+
+   .continue-button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+   }
+
+   .ms-Button {
+      min-width: 80px;
+      padding: 4px 12px;
+      border-radius: 2px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+   }
+
+   .ms-Button--primary {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+   }
+
+   .ms-Button--primary:hover {
+      background-color: #106ebe;
+   }
+
+   .ms-Button--default {
+      background-color: #f3f2f1;
+      border: 1px solid #8a8886;
+      color: #323130;
+   }
+
+   .ms-Button--default:hover {
+      background-color: #edebe9;
+   }
+
+   .signup-link {
+      margin-top: 16px;
+      text-align: center;
+   }
+
+   /* Status Message */
+   .status-message {
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      background-color: #f0f0f0;
+      color: #333;
+      line-height: 1.4;
+   }
+
+   /* Agents View */
+
+   .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+   }
+
+   /* Agent Categories */
+
+   .agent-category {
+      margin-bottom: 24px;
+   }
+
+   .category-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #edebe9;
+      margin-bottom: 12px;
+   }
+
+   .agent-card {
+      background-color: #f9f9f9;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid #0078d4;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+   }
+
+   .agent-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+   }
+
+   .agent-description {
+      font-size: 13px;
+      color: #605e5c;
+      margin-bottom: 12px;
+      line-height: 1.4;
+   }
+
+   .agent-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+   }
+
+   .formula-name {
+      font-family: Consolas, monospace;
+      background-color: #f3f2f1;
+      padding: 2px 4px;
+      border-radius: 2px;
+      display: inline-block;
+   }
+
+   /* Usage examples styling */
+   .usage-examples-section {
+   margin-top: 16px;
+   border-top: 1px solid #edebe9;
+   padding-top: 12px;
+   }
+
+   .usage-heading {
+   font-size: 14px;
+   font-weight: 600;
+   margin: 0 0 8px 0;
+   }
+
+   .examples-list {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   max-height: 300px;
+   overflow-y: auto;
+   padding-right: 8px;
+   }
+
+   .example-item {
+   border-left: 3px solid #0078d4;
+   padding-left: 8px;
+   background-color: #f5f5f5;
+   border-radius: 2px;
+   padding: 8px;
+   }
+
+   .example-topic {
+   font-weight: 600;
+   font-size: 12px;
+   margin-bottom: 4px;
+   color: #333;
+   }
+
+   .example-prompt.code {
+   font-family: Consolas, monospace;
+   font-size: 11px;
+   color: #555;
+   white-space: pre-wrap;
+   word-break: break-word;
+   line-height: 1.4;
+   background-color: #f0f0f0;
+   padding: 4px;
+   border-radius: 2px;
+   overflow-x: auto;
+   position: relative;
+   padding-right: 28px; /* Space for copy button */
+   }
+
+   /* Copy Button for Examples */
+   .copy-button {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 3px;
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      font-size: 12px;
+   }
+
+   .copy-button:hover {
+      opacity: 1;
+      background-color: #f5f5f5;
+   }
+
+   .copy-success {
+      color: green;
+   }
+
+   .example-prompt {
+      color: #605e5c;
+      font-style: italic;
+      line-height: 1.4;
+      display: inline-block;
+      padding-right: 28px; /* Space for copy button */
+   }
+
+   /* Spinner */
+   
+   .ms-Spinner {
+      position: relative;
+      width: 20px;
+      height: 20px;
+   }
+
+   .ms-Spinner::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #f3f2f1;
+      border-top-color: #0078d4;
+      animation: spinner 0.8s linear infinite;
+   }
+
+   @keyframes spinner {
+      to {
+         transform: rotate(360deg);
+      }
+   }
+
+   /* Transitions */
+   
+   .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+   }
+
+   @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+   }
+
+   /* Back to login button styling */
+.back-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.back-to-login-button {
+  display: flex;
+  align-items: center;
+  color: #666;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-to-login-button:hover {
+  color: #0078d4;
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+
+.back-to-login-button .ms-Button-icon {
+  margin-right: 4px;
+  font-size: 12px;
+}
+
+/* This targets the header-actions which contains the old button */
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Hide the old back button in the header */
+#back-to-auth-button-header {
+  display: none;
+}
+
+/* Continue to menu button styling */
+#continue-to-menu-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.continue-to-menu-button {
+  display: flex;
+  align-items: center;
+  color: #0078d4;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.continue-to-menu-button:hover {
+  background-color: #f5f5f5;
+  text-decoration: none;
+}
+
+.continue-to-menu-button .ms-Button-icon {
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* Ensure the auth view container has relative positioning */
+#auth-view {
+  position: relative;
+}
+
+/* Add this to your taskpane.css file */
+#api-key-input-container {
+  margin-bottom: 16px;
+}
+
+#continue-to-menu-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.continue-to-menu-button {
+  display: flex;
+  align-items: center;
+  color: #0078d4;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.continue-to-menu-button:hover {
+  background-color: #f5f5f5;
+  text-decoration: none;
+}
+
+.continue-to-menu-button .ms-Button-icon {
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+/* Ensure the auth view container has relative positioning */
+#auth-view .content-container {
+  position: relative;
+}
+
+/* Footer Styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f8f8;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+  z-index: 100;
+}
+
+.version {
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.footer-links {
+  color: #333;
+}
+
+.footer-links a {
+  color: #0078d4;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Additional Resources Styles */
+.additional-resources {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border-left: 4px solid #0078d4;
+  margin-bottom: 60px; /* Add space for footer */
+}
+
+.additional-resources h3 {
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.additional-resources ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.additional-resources li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.additional-resources a {
+  color: #0078d4;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.additional-resources a:hover {
+  text-decoration: underline;
+}
+
+.additional-resources .ms-Icon {
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* Add space to main content to prevent footer overlap */
+.main-content .content-container {
+  padding-bottom: 60px;
+}
+
+/* Browser and API Support Warnings */
+.browser-warning,
+.api-support-warning {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: #FFF4CE;
+  border-left: 4px solid #FFB900;
+  color: #323130;
+}
+
+.warning-icon {
+  margin-right: 12px;
+  font-size: 16px;
+  color: #FFB900;
+}
+
+.warning-message {
+  flex: 1;
+  font-size: 13px;
+}
+
+.warning-message ul {
+  margin: 8px 0 0 0;
+  padding-left: 16px;
+}
+
+.warning-message li {
+  margin-bottom: 4px;
+}
