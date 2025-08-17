@@ -1,0 +1,53 @@
+{
+    "allowCustomDataForDataTypeAny": true,
+    "functions": [
+        {
+            "description": "Call the Market Intelligence agent that routes to appropriate specialized agents",
+            "helpUrl": "https://docs.octagonagents.com/guide/agents/octagon-agent.html",
+            "id": "OCTAGON_AGENT",
+            "name": "OCTAGON_AGENT",
+            "parameters": [
+                {
+                    "description": "The question or prompt for the Octagon agent",
+                    "name": "prompt",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Call the Research agent for deep, comprehensive research",
+            "helpUrl": "https://docs.octagonagents.com/guide/agents/deep-research-agent.html",
+            "id": "DEEP_RESEARCH_AGENT",
+            "name": "DEEP_RESEARCH_AGENT",
+            "parameters": [
+                {
+                    "description": "The question or prompt for the Research agent",
+                    "name": "prompt",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        },
+        {
+            "description": "Call the Scraper agent for web data extraction",
+            "helpUrl": "https://docs.octagonagents.com/guide/agents/scraper-agent.html",
+            "id": "SCRAPER_AGENT",
+            "name": "SCRAPER_AGENT",
+            "parameters": [
+                {
+                    "description": "The question or prompt for the Scraper agent",
+                    "name": "prompt",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "type": "string"
+            }
+        }
+    ]
+}
