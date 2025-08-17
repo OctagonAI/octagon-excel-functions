@@ -33,10 +33,11 @@ jobs:
       - name: Check for suspicious files
         run: |
           # Check for suspicious files that shouldn't be there
-          SUSPICIOUS_FILES=$(find . -name "*.php" -o -name "*.asp" -o -name "*.jsp" -print -quit)
+          SUSPICIOUS_FILES=$(find . -type f \( -path "./.git" -o -path "./node_modules" -o -path "./vendor" \) -prune -o \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print -quit)
           if [ -n "$SUSPICIOUS_FILES" ]; then
             echo "❌ Suspicious server-side files detected: $SUSPICIOUS_FILES"
-            find . -name "*.php" -o -name "*.asp" -o -name "*.jsp" -print
+            echo "All suspicious files found:"
+            find . -type f \( -path "./.git" -o -path "./node_modules" -o -path "./vendor" \) -prune -o \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print
             exit 1
           fi
           
@@ -51,9 +52,21 @@ jobs:
 
       - name: Verify manifest integrity
         run: |
-          # Ensure manifest points to correct URLs
-          if ! grep -q "octagonai.github.io/octagon-excel-functions" dist/manifest.xml; then
-            echo "❌ Manifest doesn't point to correct GitHub Pages URL"
+          set -euo pipefail
+          
+          # Check if manifest file exists
+          if [ ! -f "dist/manifest.xml" ]; then
+            echo "❌ Manifest file dist/manifest.xml is missing"
             exit 1
           fi
-          echo "✅ Manifest integrity check passed"
+          
+          # Ensure manifest points to correct URLs with precise regex
+          if ! grep -E -q '^[[:space:]]*https?://octagonai\.github\.io/octagon-excel-functions(/|$)' dist/manifest.xml; then
+            echo "❌ Manifest doesn't contain valid GitHub Pages URL"
+            echo "Expected URLs matching: https://octagonai.github.io/octagon-excel-functions"
+            echo "Found URLs in manifest:"
+            grep -E 'https?://[^"]*' dist/manifest.xml || echo "(no URLs found)"
+            exit 1
+          fi
+          
+          echo "✅ Manifest integrity check passed - valid GitHub Pages URLs found"
