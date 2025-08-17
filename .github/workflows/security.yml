@@ -33,14 +33,17 @@ jobs:
       - name: Check for suspicious files
         run: |
           # Check for suspicious files that shouldn't be there
-          if find . -name "*.php" -o -name "*.asp" -o -name "*.jsp"; then
-            echo "❌ Suspicious server-side files detected"
+          SUSPICIOUS_FILES=$(find . -name "*.php" -o -name "*.asp" -o -name "*.jsp" -print -quit)
+          if [ -n "$SUSPICIOUS_FILES" ]; then
+            echo "❌ Suspicious server-side files detected: $SUSPICIOUS_FILES"
+            find . -name "*.php" -o -name "*.asp" -o -name "*.jsp" -print
             exit 1
           fi
           
           # Check for suspicious scripts in HTML/JS files
-          if grep -r "eval\|document.write\|innerHTML.*<script" dist/ --include="*.html" --include="*.js"; then
-            echo "❌ Potentially dangerous JavaScript patterns detected"
+          if grep -r "eval\|document.write\|innerHTML.*<script" dist/ --include="*.html" --include="*.js" | grep -q .; then
+            echo "❌ Potentially dangerous JavaScript patterns detected:"
+            grep -r "eval\|document.write\|innerHTML.*<script" dist/ --include="*.html" --include="*.js"
             exit 1
           fi
           
