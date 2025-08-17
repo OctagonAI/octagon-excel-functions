@@ -15,7 +15,7 @@
   <HighResolutionIconUrl DefaultValue="https://octagonai.github.io/octagon-excel-functions/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://octagonai.github.io/octagon-excel-functions/"/>
   <AppDomains>
-    <AppDomain>https://octagonai.github.io/</AppDomain>
+    <AppDomain>https://octagonai.github.io/octagon-excel-functions/</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
