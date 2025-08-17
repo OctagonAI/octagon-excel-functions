@@ -82,6 +82,14 @@ module.exports = async (env, options) => {
               }
             },
           },
+          // Add GitHub Pages support files for production builds
+          ...(dev ? [] : [
+            {
+              from: "src/github-pages/",
+              to: "",
+              noErrorOnMissing: true,
+            },
+          ]),
         ],
       }),
     ],
