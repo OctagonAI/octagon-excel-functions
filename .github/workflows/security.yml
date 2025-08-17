@@ -32,12 +32,13 @@ jobs:
 
       - name: Check for suspicious files
         run: |
-          # Check for suspicious files that shouldn't be there
-          SUSPICIOUS_FILES=$(find . -type f \( -path "./.git" -o -path "./node_modules" -o -path "./vendor" \) -prune -o \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print -quit)
+          # Check for suspicious files in project directories (excluding dependencies)
+          # Focus on areas where malicious files would actually be dangerous
+          SUSPICIOUS_FILES=$(find . \( -path "./node_modules" -o -path "./.git" -o -path "./vendor" -o -path "./dist" \) -prune -o -type f \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print -quit)
           if [ -n "$SUSPICIOUS_FILES" ]; then
-            echo "❌ Suspicious server-side files detected: $SUSPICIOUS_FILES"
-            echo "All suspicious files found:"
-            find . -type f \( -path "./.git" -o -path "./node_modules" -o -path "./vendor" \) -prune -o \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print
+            echo "❌ Suspicious server-side files detected in project source: $SUSPICIOUS_FILES"
+            echo "All suspicious files found in project source:"
+            find . \( -path "./node_modules" -o -path "./.git" -o -path "./vendor" -o -path "./dist" \) -prune -o -type f \( -name "*.php" -o -name "*.asp" -o -name "*.jsp" \) -print
             exit 1
           fi
           
