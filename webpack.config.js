@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://github.com/OctagonAI/octagon-excel-functions/";
+const urlProd = "https://octagonai.github.io/octagon-excel-functions/";
 
 /* global require, module, process, __dirname */
 
