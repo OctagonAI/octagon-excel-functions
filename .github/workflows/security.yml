@@ -1,0 +1,54 @@
+name: Security Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Build and verify
+        run: npm run build
+
+      - name: Check for suspicious files
+        run: |
+          # Check for suspicious files that shouldn't be there
+          if find . -name "*.php" -o -name "*.asp" -o -name "*.jsp"; then
+            echo "❌ Suspicious server-side files detected"
+            exit 1
+          fi
+          
+          # Check for suspicious scripts in HTML/JS files
+          if grep -r "eval\|document.write\|innerHTML.*<script" dist/ --include="*.html" --include="*.js"; then
+            echo "❌ Potentially dangerous JavaScript patterns detected"
+            exit 1
+          fi
+          
+          echo "✅ Security checks passed"
+
+      - name: Verify manifest integrity
+        run: |
+          # Ensure manifest points to correct URLs
+          if ! grep -q "octagonai.github.io/octagon-excel-functions" dist/manifest.xml; then
+            echo "❌ Manifest doesn't point to correct GitHub Pages URL"
+            exit 1
+          fi
+          echo "✅ Manifest integrity check passed"
