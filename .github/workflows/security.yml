@@ -62,11 +62,11 @@ jobs:
           fi
           
           # Ensure manifest points to correct URLs with precise regex
-          if ! grep -E -q '^[[:space:]]*https?://octagonai\.github\.io/octagon-excel-functions(/|$)' dist/manifest.xml; then
+          if ! grep -E -q 'https?://octagonai\.github\.io/octagon-excel-functions(/[^"]*)?["/]' dist/manifest.xml; then
             echo "❌ Manifest doesn't contain valid GitHub Pages URL"
             echo "Expected URLs matching: https://octagonai.github.io/octagon-excel-functions"
             echo "Found URLs in manifest:"
-            grep -E 'https?://[^"]*' dist/manifest.xml || echo "(no URLs found)"
+            grep -E -o 'https?://[^"]*' dist/manifest.xml || echo "(no URLs found)"
             exit 1
           fi
           
