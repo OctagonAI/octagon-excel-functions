@@ -17,9 +17,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Only run on the original repository, not forks
+    if: github.repository == 'OctagonAI/octagon-excel-functions'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Only checkout from the original repository
+          repository: OctagonAI/octagon-excel-functions
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,6 +53,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    # Double-check we're on the original repository
+    if: github.repository == 'OctagonAI/octagon-excel-functions'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
