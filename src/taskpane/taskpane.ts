@@ -628,15 +628,23 @@ function createAgentCard(agent: typeof OCTAGON_AGENTS[0]): HTMLElement {
   // Example prompt
   if (agent.examplePrompt) {
     const example = document.createElement("div");
-    example.style.position = "relative";
-    example.innerHTML = `<strong>Example:</strong> <span class="example-prompt">${agent.examplePrompt}</span>`;
+    example.innerHTML = `<strong>Example:</strong>`;
+    
+    // Create a container for the prompt to allow positioning the copy button
+    const promptContainer = document.createElement("div");
+    promptContainer.style.position = "relative";
+    promptContainer.style.display = "inline-block";
+    promptContainer.style.width = "100%";
+    
+    const promptElement = document.createElement("span");
+    promptElement.className = "example-prompt";
+    promptElement.textContent = agent.examplePrompt;
+    promptContainer.appendChild(promptElement);
     
     // Add copy button for the example prompt
     const copyButton = document.createElement("button");
     copyButton.className = "copy-button";
     copyButton.title = "Copy example";
-    copyButton.style.top = "0";
-    copyButton.style.right = "0";
     copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
     copyButton.onclick = (e) => {
       e.stopPropagation();
@@ -653,7 +661,8 @@ function createAgentCard(agent: typeof OCTAGON_AGENTS[0]): HTMLElement {
         });
     };
     
-    example.appendChild(copyButton);
+    promptContainer.appendChild(copyButton);
+    example.appendChild(promptContainer);
     meta.appendChild(example);
   }
   
