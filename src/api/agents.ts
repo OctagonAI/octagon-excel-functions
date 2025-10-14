@@ -6,24 +6,6 @@
 import { AgentInfo, AgentCategory } from './types';
 
 export const OCTAGON_AGENTS: AgentInfo[] = [  
-  // Deep Research Agents
-  {
-    id: 'octagon-deep-research-agent',
-    displayName: 'Deep Research Agent',
-    excelFormulaName: 'OCTAGON.DEEP_RESEARCH_AGENT',
-    description: 'A comprehensive agent that can utilize multiple sources for deep research analysis.',
-    category: AgentCategory.DeepResearch,
-    examplePrompt: '=OCTAGON.DEEP_RESEARCH_AGENT("Research the financial impact of Apple privacy changes on digital advertising companies revenue and margins")'
-  },
-  {
-    id: 'octagon-scraper-agent',
-    displayName: 'Scraper Agent',
-    excelFormulaName: 'OCTAGON.SCRAPER_AGENT',
-    description: 'Specialized agent for financial data extraction from investor websites.',
-    category: AgentCategory.DeepResearch,
-    examplePrompt: '=OCTAGON.SCRAPER_AGENT("Extract all data fields from zillow.com/san-francisco-ca/ max_pages:2, country:us")'
-  },
-  // Market Intelligence Agents
   {
     id: 'octagon-agent',
     displayName: 'Octagon Agent',
