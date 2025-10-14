@@ -66,7 +66,7 @@ function setupEventListeners() {
     testConnectionButton.addEventListener("click", handleTestConnection);
   }
   
-  // Clear API Keys button
+  // Clear API Key button
   const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   if (clearApiKeysButton) {
     clearApiKeysButton.addEventListener("click", handleClearApiKeys);
@@ -210,7 +210,7 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "none";
     }
     
-    // Show Clear API Keys button since there's a stored key
+    // Show Clear API Key button since there's a stored key
     if (clearApiKeysButton) {
       clearApiKeysButton.style.display = "inline-block";
     }
@@ -255,7 +255,7 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "block";
     }
     
-    // Hide Clear API Keys button since there's no stored key
+    // Hide Clear API Key button since there's no stored key
     if (clearApiKeysButton) {
       clearApiKeysButton.style.display = "none";
     }
@@ -353,7 +353,7 @@ function handleSubmit() {
       statusMessageContainer.style.display = "none";
     }
     
-    // Show Clear API Keys button
+    // Show Clear API Key button
     const clearApiKeysButton = document.getElementById("clear-api-keys-button");
     if (clearApiKeysButton) {
       clearApiKeysButton.style.display = "inline-block";
@@ -462,7 +462,7 @@ async function handleTestConnection() {
         statusMessageContainer.style.display = "none";
       }
       
-      // Show Clear API Keys button
+      // Show Clear API Key button
       const clearApiKeysButton = document.getElementById("clear-api-keys-button");
       if (clearApiKeysButton) {
         clearApiKeysButton.style.display = "inline-block";
@@ -515,7 +515,7 @@ async function handleTestConnection() {
 }
 
 /**
- * Handle the Clear API Keys button click
+ * Handle the Clear API Key button click
  */
 function handleClearApiKeys() {
   apiService.clearApiKey();
@@ -552,7 +552,7 @@ function handleClearApiKeys() {
     continueToMenuContainer.style.display = "none";
   }
   
-  // Hide the Clear API Keys button since there's no stored key anymore
+  // Hide the Clear API Key button since there's no stored key anymore
   const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   if (clearApiKeysButton) {
     clearApiKeysButton.style.display = "none";
@@ -561,7 +561,7 @@ function handleClearApiKeys() {
   // Update status message
   const statusMessageContainer = document.getElementById("api-key-status-message");
   if (statusMessageContainer) {
-    statusMessageContainer.textContent = "All stored API Keys have been cleared. Please provide a new API Key to continue.";
+    statusMessageContainer.textContent = "Stored API Key has been cleared. Please provide a new API Key to continue.";
     statusMessageContainer.style.display = "block";
   }
   
@@ -571,7 +571,7 @@ function handleClearApiKeys() {
   // Update button states (buttons should be disabled after clearing)
   updateButtonStates();
   
-  Logger.info("All API Keys cleared");
+  Logger.info("API Key cleared");
 }
 
 /**
