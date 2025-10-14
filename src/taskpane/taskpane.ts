@@ -54,6 +54,12 @@ Office.onReady(async (info) => {
  * Set up event listeners for UI interactions
  */
 function setupEventListeners() {
+  // Submit button
+  const submitButton = document.getElementById("submit-button");
+  if (submitButton) {
+    submitButton.addEventListener("click", handleSubmit);
+  }
+  
   // Test Connection button
   const testConnectionButton = document.getElementById("test-connection-button");
   if (testConnectionButton) {
@@ -80,7 +86,7 @@ function setupEventListeners() {
   if (apiKeyInput) {
     apiKeyInput.addEventListener("keypress", (event) => {
       if (event.key === "Enter") {
-        handleTestConnection();
+        handleSubmit();
       }
     });
   }
@@ -121,6 +127,7 @@ function checkApiKeyStatus() {
   const statusMessageContainer = document.getElementById("api-key-status-message");
   const continueToMenuContainer = document.getElementById("continue-to-menu-container");
   const apiKeyInputContainer = document.getElementById("api-key-input-container");
+  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   
   // Get the authentication header and instruction text
   const authHeader = document.querySelector(".auth-container h3.ms-font-l");
@@ -167,6 +174,11 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "none";
     }
     
+    // Show Clear API Keys button since there's a stored key
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "inline-block";
+    }
+    
     // Rename the action buttons
     updateActionButtonLabels(true);
     
@@ -207,6 +219,11 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "block";
     }
     
+    // Hide Clear API Keys button since there's no stored key
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "none";
+    }
+    
     // Update button labels for new users
     updateActionButtonLabels(false);
   }
@@ -217,23 +234,148 @@ function checkApiKeyStatus() {
  * @param isAuthenticated Whether the user is authenticated
  */
 function updateActionButtonLabels(isAuthenticated: boolean) {
+  const submitButton = document.getElementById("submit-button");
   const testConnectionButton = document.getElementById("test-connection-button");
-  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   
-  if (testConnectionButton) {
+  if (submitButton) {
     if (isAuthenticated) {
-      testConnectionButton.innerHTML = '<span class="ms-Button-label">Check</span>';
+      submitButton.style.display = "none";
     } else {
-      testConnectionButton.innerHTML = '<span class="ms-Button-label">Test Connection</span>';
+      submitButton.style.display = "inline-block";
     }
   }
   
-  if (clearApiKeysButton) {
-    if (isAuthenticated) {
-      clearApiKeysButton.innerHTML = '<span class="ms-Button-label">Clear</span>';
-    } else {
-      clearApiKeysButton.innerHTML = '<span class="ms-Button-label">Clear API Keys</span>';
+  if (testConnectionButton) {
+    // Test Connection button label stays the same regardless of auth state
+    testConnectionButton.innerHTML = '<span class="ms-Button-label">Test Connection</span>';
+  }
+}
+
+/**
+ * Handle the Submit button click
+ */
+async function handleSubmit() {
+  try {
+    // Get the API key from the input field
+    const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
+    const apiKey = apiKeyInput?.value?.trim();
+    
+    if (!apiKey) {
+      showAuthError("Please enter an API Key.");
+      return;
     }
+    
+    // Set the API key
+    apiService.setApiKey(apiKey);
+    
+    // Show loading state
+    toggleAuthLoadingState(true);
+    
+    // Test the connection
+    const isValid = await testApiConnection();
+    
+    // Hide loading state
+    toggleAuthLoadingState(false);
+    
+    if (isValid) {
+      // Success - show success message and enable continue button
+      clearAuthError();
+      showAuthSuccess("Connection successful! API Key verified.");
+      
+      // Get the authentication header and instruction text
+      const authHeader = document.querySelector(".auth-container h3.ms-font-l");
+      const authInstructions = document.querySelector(".auth-container p.ms-font-m");
+      
+      // Update text for authenticated users
+      if (authHeader) {
+        authHeader.textContent = "API Key Detected";
+      }
+      
+      if (authInstructions) {
+        authInstructions.textContent = "Your API key has been detected. You can proceed to the main menu or verify your connection.";
+      }
+      
+      // Update the UI to authenticated state
+      const apiKeyInputContainer = document.getElementById("api-key-input-container");
+      if (apiKeyInputContainer) {
+        apiKeyInputContainer.style.display = "none";
+      }
+      
+      // Show the continue button
+      const continueToMenuContainer = document.getElementById("continue-to-menu-container");
+      if (continueToMenuContainer) {
+        continueToMenuContainer.style.display = "flex";
+        continueToMenuContainer.innerHTML = "";
+        
+        const continueButton = document.createElement("button");
+        continueButton.id = "continue-to-menu-button";
+        continueButton.className = "ms-Button ms-Button--icon continue-to-menu-button";
+        continueButton.innerHTML = `
+          <span class="ms-Button-label">Main Menu</span>
+          <span class="ms-Button-icon">
+            <i class="ms-Icon ms-Icon--ChevronRight"></i>
+          </span>
+        `;
+        continueButton.addEventListener("click", showAgentsView);
+        
+        continueToMenuContainer.appendChild(continueButton);
+      }
+      
+      // Hide status message
+      const statusMessageContainer = document.getElementById("api-key-status-message");
+      if (statusMessageContainer) {
+        statusMessageContainer.style.display = "none";
+      }
+      
+      // Show Clear API Keys button
+      const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+      if (clearApiKeysButton) {
+        clearApiKeysButton.style.display = "inline-block";
+      }
+      
+      updateActionButtonLabels(true);
+      isAuthenticated = true;
+      
+      // Automatically proceed to the Main Menu after a brief delay
+      // This gives the user a chance to see the success message first
+      setTimeout(() => {
+        showAgentsView();
+      }, 1000);
+
+    } else {
+      
+      // Failed - show error message
+      showAuthError("Invalid API key. Please check and try again.");
+      apiService.clearApiKey();
+      
+      // Reset UI text
+      const authHeader = document.querySelector(".auth-container h3.ms-font-l");
+      const authInstructions = document.querySelector(".auth-container p.ms-font-m");
+      
+      if (authHeader) {
+        authHeader.textContent = "Authentication Required";
+      }
+      
+      if (authInstructions) {
+        authInstructions.textContent = "Please enter your Octagon API key to continue:";
+      }
+      
+      // Show the API key input
+      const apiKeyInputContainer = document.getElementById("api-key-input-container");
+      if (apiKeyInputContainer) {
+        apiKeyInputContainer.style.display = "block";
+      }
+      
+      updateActionButtonLabels(false);
+      isAuthenticated = false;
+    }
+  } catch (error) {
+    // Hide loading state
+    toggleAuthLoadingState(false);
+    
+    // Show error message
+    showAuthError("An error occurred. Please try again.");
+    Logger.error("Authentication error:", error);
   }
 }
 
@@ -324,6 +466,12 @@ async function handleTestConnection() {
         statusMessageContainer.style.display = "none";
       }
       
+      // Show Clear API Keys button
+      const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+      if (clearApiKeysButton) {
+        clearApiKeysButton.style.display = "inline-block";
+      }
+      
       updateActionButtonLabels(true);
       isAuthenticated = true;
       
@@ -408,6 +556,12 @@ function handleClearApiKeys() {
     continueToMenuContainer.style.display = "none";
   }
   
+  // Hide the Clear API Keys button since there's no stored key anymore
+  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+  if (clearApiKeysButton) {
+    clearApiKeysButton.style.display = "none";
+  }
+  
   // Update status message
   const statusMessageContainer = document.getElementById("api-key-status-message");
   if (statusMessageContainer) {
@@ -486,15 +640,18 @@ function clearAuthError() {
  * @param isLoading Whether to show or hide the loading state
  */
 function toggleAuthLoadingState(isLoading: boolean) {
-  const button = document.getElementById("test-connection-button");
+  const submitButton = document.getElementById("submit-button");
+  const testConnectionButton = document.getElementById("test-connection-button");
   const spinner = document.getElementById("auth-spinner");
   
-  if (button && spinner) {
+  if (spinner) {
     if (isLoading) {
-      button.setAttribute("disabled", "true");
+      if (submitButton) submitButton.setAttribute("disabled", "true");
+      if (testConnectionButton) testConnectionButton.setAttribute("disabled", "true");
       spinner.style.display = "block";
     } else {
-      button.removeAttribute("disabled");
+      if (submitButton) submitButton.removeAttribute("disabled");
+      if (testConnectionButton) testConnectionButton.removeAttribute("disabled");
       spinner.style.display = "none";
     }
   }
