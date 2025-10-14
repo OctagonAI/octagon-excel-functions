@@ -254,7 +254,7 @@ function updateActionButtonLabels(isAuthenticated: boolean) {
 /**
  * Handle the Submit button click
  */
-async function handleSubmit() {
+function handleSubmit() {
   try {
     // Get the API key from the input field
     const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
@@ -265,117 +265,77 @@ async function handleSubmit() {
       return;
     }
     
-    // Set the API key
+    // Set and persist the API key
     apiService.setApiKey(apiKey);
     
-    // Show loading state
-    toggleAuthLoadingState(true);
+    // Success - show success message and enable continue button
+    clearAuthError();
+    showAuthSuccess("API Key saved successfully!");
     
-    // Test the connection
-    const isValid = await testApiConnection();
+    // Get the authentication header and instruction text
+    const authHeader = document.querySelector(".auth-container h3.ms-font-l");
+    const authInstructions = document.querySelector(".auth-container p.ms-font-m");
     
-    // Hide loading state
-    toggleAuthLoadingState(false);
-    
-    if (isValid) {
-      // Success - show success message and enable continue button
-      clearAuthError();
-      showAuthSuccess("Connection successful! API Key verified.");
-      
-      // Get the authentication header and instruction text
-      const authHeader = document.querySelector(".auth-container h3.ms-font-l");
-      const authInstructions = document.querySelector(".auth-container p.ms-font-m");
-      
-      // Update text for authenticated users
-      if (authHeader) {
-        authHeader.textContent = "API Key Detected";
-      }
-      
-      if (authInstructions) {
-        authInstructions.textContent = "Your API key has been detected. You can proceed to the main menu or verify your connection.";
-      }
-      
-      // Update the UI to authenticated state
-      const apiKeyInputContainer = document.getElementById("api-key-input-container");
-      if (apiKeyInputContainer) {
-        apiKeyInputContainer.style.display = "none";
-      }
-      
-      // Show the continue button
-      const continueToMenuContainer = document.getElementById("continue-to-menu-container");
-      if (continueToMenuContainer) {
-        continueToMenuContainer.style.display = "flex";
-        continueToMenuContainer.innerHTML = "";
-        
-        const continueButton = document.createElement("button");
-        continueButton.id = "continue-to-menu-button";
-        continueButton.className = "ms-Button ms-Button--icon continue-to-menu-button";
-        continueButton.innerHTML = `
-          <span class="ms-Button-label">Main Menu</span>
-          <span class="ms-Button-icon">
-            <i class="ms-Icon ms-Icon--ChevronRight"></i>
-          </span>
-        `;
-        continueButton.addEventListener("click", showAgentsView);
-        
-        continueToMenuContainer.appendChild(continueButton);
-      }
-      
-      // Hide status message
-      const statusMessageContainer = document.getElementById("api-key-status-message");
-      if (statusMessageContainer) {
-        statusMessageContainer.style.display = "none";
-      }
-      
-      // Show Clear API Keys button
-      const clearApiKeysButton = document.getElementById("clear-api-keys-button");
-      if (clearApiKeysButton) {
-        clearApiKeysButton.style.display = "inline-block";
-      }
-      
-      updateActionButtonLabels(true);
-      isAuthenticated = true;
-      
-      // Automatically proceed to the Main Menu after a brief delay
-      // This gives the user a chance to see the success message first
-      setTimeout(() => {
-        showAgentsView();
-      }, 1000);
-
-    } else {
-      
-      // Failed - show error message
-      showAuthError("Invalid API key. Please check and try again.");
-      apiService.clearApiKey();
-      
-      // Reset UI text
-      const authHeader = document.querySelector(".auth-container h3.ms-font-l");
-      const authInstructions = document.querySelector(".auth-container p.ms-font-m");
-      
-      if (authHeader) {
-        authHeader.textContent = "Authentication Required";
-      }
-      
-      if (authInstructions) {
-        authInstructions.textContent = "Please enter your Octagon API key to continue:";
-      }
-      
-      // Show the API key input
-      const apiKeyInputContainer = document.getElementById("api-key-input-container");
-      if (apiKeyInputContainer) {
-        apiKeyInputContainer.style.display = "block";
-      }
-      
-      updateActionButtonLabels(false);
-      isAuthenticated = false;
+    // Update text for authenticated users
+    if (authHeader) {
+      authHeader.textContent = "API Key Detected";
     }
-  } catch (error) {
-    // Hide loading state
-    toggleAuthLoadingState(false);
     
+    if (authInstructions) {
+      authInstructions.textContent = "Your API key has been saved. You can proceed to the main menu or verify your connection.";
+    }
+    
+    // Update the UI to authenticated state
+    const apiKeyInputContainer = document.getElementById("api-key-input-container");
+    if (apiKeyInputContainer) {
+      apiKeyInputContainer.style.display = "none";
+    }
+    
+    // Show the continue button
+    const continueToMenuContainer = document.getElementById("continue-to-menu-container");
+    if (continueToMenuContainer) {
+      continueToMenuContainer.style.display = "flex";
+      continueToMenuContainer.innerHTML = "";
+      
+      const continueButton = document.createElement("button");
+      continueButton.id = "continue-to-menu-button";
+      continueButton.className = "ms-Button ms-Button--icon continue-to-menu-button";
+      continueButton.innerHTML = `
+        <span class="ms-Button-label">Main Menu</span>
+        <span class="ms-Button-icon">
+          <i class="ms-Icon ms-Icon--ChevronRight"></i>
+        </span>
+      `;
+      continueButton.addEventListener("click", showAgentsView);
+      
+      continueToMenuContainer.appendChild(continueButton);
+    }
+    
+    // Hide status message
+    const statusMessageContainer = document.getElementById("api-key-status-message");
+    if (statusMessageContainer) {
+      statusMessageContainer.style.display = "none";
+    }
+    
+    // Show Clear API Keys button
+    const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "inline-block";
+    }
+    
+    updateActionButtonLabels(true);
+    isAuthenticated = true;
+    
+    // Automatically proceed to the Main Menu after a brief delay
+    // This gives the user a chance to see the success message first
+    setTimeout(() => {
+      showAgentsView();
+    }, 800);
+    
+  } catch (error) {
     // Show error message
-    showAuthError("An error occurred. Please try again.");
-    Logger.error("Authentication error:", error);
+    showAuthError("An error occurred while saving the API key. Please try again.");
+    Logger.error("Error saving API key:", error);
   }
 }
 
