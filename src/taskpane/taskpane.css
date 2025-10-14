@@ -133,6 +133,15 @@
       background-color: #edebe9;
    }
 
+   .ms-Button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+   }
+
+   .ms-Button:disabled:hover {
+      background-color: inherit;
+   }
+
    .signup-link {
       margin-top: 16px;
       text-align: center;

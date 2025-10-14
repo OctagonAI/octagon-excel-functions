@@ -89,6 +89,42 @@ function setupEventListeners() {
         handleSubmit();
       }
     });
+    
+    // Enable/disable buttons based on input value
+    apiKeyInput.addEventListener("input", () => {
+      updateButtonStates();
+    });
+  }
+  
+  // Set initial button states
+  updateButtonStates();
+}
+
+/**
+ * Update button states based on API key input
+ */
+function updateButtonStates() {
+  const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
+  const submitButton = document.getElementById("submit-button");
+  const testConnectionButton = document.getElementById("test-connection-button");
+  
+  const hasValue = apiKeyInput?.value?.trim().length > 0;
+  
+  // Enable/disable buttons based on whether there's input
+  if (submitButton) {
+    if (hasValue) {
+      submitButton.removeAttribute("disabled");
+    } else {
+      submitButton.setAttribute("disabled", "true");
+    }
+  }
+  
+  if (testConnectionButton) {
+    if (hasValue) {
+      testConnectionButton.removeAttribute("disabled");
+    } else {
+      testConnectionButton.setAttribute("disabled", "true");
+    }
   }
 }
 
@@ -531,6 +567,9 @@ function handleClearApiKeys() {
   
   // Update button labels
   updateActionButtonLabels(false);
+  
+  // Update button states (buttons should be disabled after clearing)
+  updateButtonStates();
   
   Logger.info("All API Keys cleared");
 }
