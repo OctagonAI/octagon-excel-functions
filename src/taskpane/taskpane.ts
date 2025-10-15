@@ -54,13 +54,19 @@ Office.onReady(async (info) => {
  * Set up event listeners for UI interactions
  */
 function setupEventListeners() {
+  // Submit button
+  const submitButton = document.getElementById("submit-button");
+  if (submitButton) {
+    submitButton.addEventListener("click", handleSubmit);
+  }
+  
   // Test Connection button
   const testConnectionButton = document.getElementById("test-connection-button");
   if (testConnectionButton) {
     testConnectionButton.addEventListener("click", handleTestConnection);
   }
   
-  // Clear API Keys button
+  // Clear API Key button
   const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   if (clearApiKeysButton) {
     clearApiKeysButton.addEventListener("click", handleClearApiKeys);
@@ -80,9 +86,45 @@ function setupEventListeners() {
   if (apiKeyInput) {
     apiKeyInput.addEventListener("keypress", (event) => {
       if (event.key === "Enter") {
-        handleTestConnection();
+        handleSubmit();
       }
     });
+    
+    // Enable/disable buttons based on input value
+    apiKeyInput.addEventListener("input", () => {
+      updateButtonStates();
+    });
+  }
+  
+  // Set initial button states
+  updateButtonStates();
+}
+
+/**
+ * Update button states based on API key input
+ */
+function updateButtonStates() {
+  const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
+  const submitButton = document.getElementById("submit-button");
+  const testConnectionButton = document.getElementById("test-connection-button");
+  
+  const hasValue = apiKeyInput?.value?.trim().length > 0;
+  
+  // Enable/disable buttons based on whether there's input
+  if (submitButton) {
+    if (hasValue) {
+      submitButton.removeAttribute("disabled");
+    } else {
+      submitButton.setAttribute("disabled", "true");
+    }
+  }
+  
+  if (testConnectionButton) {
+    if (hasValue) {
+      testConnectionButton.removeAttribute("disabled");
+    } else {
+      testConnectionButton.setAttribute("disabled", "true");
+    }
   }
 }
 
@@ -121,6 +163,7 @@ function checkApiKeyStatus() {
   const statusMessageContainer = document.getElementById("api-key-status-message");
   const continueToMenuContainer = document.getElementById("continue-to-menu-container");
   const apiKeyInputContainer = document.getElementById("api-key-input-container");
+  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   
   // Get the authentication header and instruction text
   const authHeader = document.querySelector(".auth-container h3.ms-font-l");
@@ -167,6 +210,11 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "none";
     }
     
+    // Show Clear API Key button since there's a stored key
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "inline-block";
+    }
+    
     // Rename the action buttons
     updateActionButtonLabels(true);
     
@@ -207,6 +255,11 @@ function checkApiKeyStatus() {
       apiKeyInputContainer.style.display = "block";
     }
     
+    // Hide Clear API Key button since there's no stored key
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "none";
+    }
+    
     // Update button labels for new users
     updateActionButtonLabels(false);
   }
@@ -217,23 +270,108 @@ function checkApiKeyStatus() {
  * @param isAuthenticated Whether the user is authenticated
  */
 function updateActionButtonLabels(isAuthenticated: boolean) {
+  const submitButton = document.getElementById("submit-button");
   const testConnectionButton = document.getElementById("test-connection-button");
-  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
   
-  if (testConnectionButton) {
+  if (submitButton) {
     if (isAuthenticated) {
-      testConnectionButton.innerHTML = '<span class="ms-Button-label">Check</span>';
+      submitButton.style.display = "none";
     } else {
-      testConnectionButton.innerHTML = '<span class="ms-Button-label">Test Connection</span>';
+      submitButton.style.display = "inline-block";
     }
   }
   
-  if (clearApiKeysButton) {
-    if (isAuthenticated) {
-      clearApiKeysButton.innerHTML = '<span class="ms-Button-label">Clear</span>';
-    } else {
-      clearApiKeysButton.innerHTML = '<span class="ms-Button-label">Clear API Keys</span>';
+  if (testConnectionButton) {
+    // Test Connection button label stays the same regardless of auth state
+    testConnectionButton.innerHTML = '<span class="ms-Button-label">Test Connection</span>';
+  }
+}
+
+/**
+ * Handle the Submit button click
+ */
+function handleSubmit() {
+  try {
+    // Get the API key from the input field
+    const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
+    const apiKey = apiKeyInput?.value?.trim();
+    
+    if (!apiKey) {
+      showAuthError("Please enter an API Key.");
+      return;
     }
+    
+    // Set and persist the API key
+    apiService.setApiKey(apiKey);
+    
+    // Success - show success message and enable continue button
+    clearAuthError();
+    showAuthSuccess("API Key saved successfully!");
+    
+    // Get the authentication header and instruction text
+    const authHeader = document.querySelector(".auth-container h3.ms-font-l");
+    const authInstructions = document.querySelector(".auth-container p.ms-font-m");
+    
+    // Update text for authenticated users
+    if (authHeader) {
+      authHeader.textContent = "API Key Detected";
+    }
+    
+    if (authInstructions) {
+      authInstructions.textContent = "Your API key has been saved. You can proceed to the main menu or verify your connection.";
+    }
+    
+    // Update the UI to authenticated state
+    const apiKeyInputContainer = document.getElementById("api-key-input-container");
+    if (apiKeyInputContainer) {
+      apiKeyInputContainer.style.display = "none";
+    }
+    
+    // Show the continue button
+    const continueToMenuContainer = document.getElementById("continue-to-menu-container");
+    if (continueToMenuContainer) {
+      continueToMenuContainer.style.display = "flex";
+      continueToMenuContainer.innerHTML = "";
+      
+      const continueButton = document.createElement("button");
+      continueButton.id = "continue-to-menu-button";
+      continueButton.className = "ms-Button ms-Button--icon continue-to-menu-button";
+      continueButton.innerHTML = `
+        <span class="ms-Button-label">Main Menu</span>
+        <span class="ms-Button-icon">
+          <i class="ms-Icon ms-Icon--ChevronRight"></i>
+        </span>
+      `;
+      continueButton.addEventListener("click", showAgentsView);
+      
+      continueToMenuContainer.appendChild(continueButton);
+    }
+    
+    // Hide status message
+    const statusMessageContainer = document.getElementById("api-key-status-message");
+    if (statusMessageContainer) {
+      statusMessageContainer.style.display = "none";
+    }
+    
+    // Show Clear API Key button
+    const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+    if (clearApiKeysButton) {
+      clearApiKeysButton.style.display = "inline-block";
+    }
+    
+    updateActionButtonLabels(true);
+    isAuthenticated = true;
+    
+    // Automatically proceed to the Main Menu after a brief delay
+    // This gives the user a chance to see the success message first
+    setTimeout(() => {
+      showAgentsView();
+    }, 800);
+    
+  } catch (error) {
+    // Show error message
+    showAuthError("An error occurred while saving the API key. Please try again.");
+    Logger.error("Error saving API key:", error);
   }
 }
 
@@ -324,6 +462,12 @@ async function handleTestConnection() {
         statusMessageContainer.style.display = "none";
       }
       
+      // Show Clear API Key button
+      const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+      if (clearApiKeysButton) {
+        clearApiKeysButton.style.display = "inline-block";
+      }
+      
       updateActionButtonLabels(true);
       isAuthenticated = true;
       
@@ -371,7 +515,7 @@ async function handleTestConnection() {
 }
 
 /**
- * Handle the Clear API Keys button click
+ * Handle the Clear API Key button click
  */
 function handleClearApiKeys() {
   apiService.clearApiKey();
@@ -408,17 +552,26 @@ function handleClearApiKeys() {
     continueToMenuContainer.style.display = "none";
   }
   
+  // Hide the Clear API Key button since there's no stored key anymore
+  const clearApiKeysButton = document.getElementById("clear-api-keys-button");
+  if (clearApiKeysButton) {
+    clearApiKeysButton.style.display = "none";
+  }
+  
   // Update status message
   const statusMessageContainer = document.getElementById("api-key-status-message");
   if (statusMessageContainer) {
-    statusMessageContainer.textContent = "All stored API Keys have been cleared. Please provide a new API Key to continue.";
+    statusMessageContainer.textContent = "Stored API Key has been cleared. Please provide a new API Key to continue.";
     statusMessageContainer.style.display = "block";
   }
   
   // Update button labels
   updateActionButtonLabels(false);
   
-  Logger.info("All API Keys cleared");
+  // Update button states (buttons should be disabled after clearing)
+  updateButtonStates();
+  
+  Logger.info("API Key cleared");
 }
 
 /**
@@ -486,15 +639,18 @@ function clearAuthError() {
  * @param isLoading Whether to show or hide the loading state
  */
 function toggleAuthLoadingState(isLoading: boolean) {
-  const button = document.getElementById("test-connection-button");
+  const submitButton = document.getElementById("submit-button");
+  const testConnectionButton = document.getElementById("test-connection-button");
   const spinner = document.getElementById("auth-spinner");
   
-  if (button && spinner) {
+  if (spinner) {
     if (isLoading) {
-      button.setAttribute("disabled", "true");
+      if (submitButton) submitButton.setAttribute("disabled", "true");
+      if (testConnectionButton) testConnectionButton.setAttribute("disabled", "true");
       spinner.style.display = "block";
     } else {
-      button.removeAttribute("disabled");
+      if (submitButton) submitButton.removeAttribute("disabled");
+      if (testConnectionButton) testConnectionButton.removeAttribute("disabled");
       spinner.style.display = "none";
     }
   }
@@ -628,15 +784,23 @@ function createAgentCard(agent: typeof OCTAGON_AGENTS[0]): HTMLElement {
   // Example prompt
   if (agent.examplePrompt) {
     const example = document.createElement("div");
-    example.style.position = "relative";
-    example.innerHTML = `<strong>Example:</strong> <span class="example-prompt">${agent.examplePrompt}</span>`;
+    example.innerHTML = `<strong>Example:</strong>`;
+    
+    // Create a container for the prompt to allow positioning the copy button
+    const promptContainer = document.createElement("div");
+    promptContainer.style.position = "relative";
+    promptContainer.style.display = "inline-block";
+    promptContainer.style.width = "100%";
+    
+    const promptElement = document.createElement("span");
+    promptElement.className = "example-prompt";
+    promptElement.textContent = agent.examplePrompt;
+    promptContainer.appendChild(promptElement);
     
     // Add copy button for the example prompt
     const copyButton = document.createElement("button");
     copyButton.className = "copy-button";
     copyButton.title = "Copy example";
-    copyButton.style.top = "0";
-    copyButton.style.right = "0";
     copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
     copyButton.onclick = (e) => {
       e.stopPropagation();
@@ -653,7 +817,8 @@ function createAgentCard(agent: typeof OCTAGON_AGENTS[0]): HTMLElement {
         });
     };
     
-    example.appendChild(copyButton);
+    promptContainer.appendChild(copyButton);
+    example.appendChild(promptContainer);
     meta.appendChild(example);
   }
   

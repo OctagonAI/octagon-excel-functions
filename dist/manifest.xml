@@ -13,9 +13,9 @@
   <Description DefaultValue="Access real-time market intelligence and financial data directly in Excel with Octagon AI agents." />
   <IconUrl DefaultValue="https://octagonai.github.io/octagon-excel-functions/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://octagonai.github.io/octagon-excel-functions/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="https://octagonai.github.io/octagon-excel-functions/"/>
+  <SupportUrl DefaultValue="https://www.octagonai.co"/>
   <AppDomains>
-    <AppDomain>https://octagonai.github.io/octagon-excel-functions/</AppDomain>
+    <AppDomain>https://www.octagonai.co</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
