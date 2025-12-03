@@ -1,13 +1,32 @@
 /**
  * Octagon API Agents Definitions
- * These interfaces define the available agents in the Octagon API
+ * These interfaces define the available agents in Excel Add-in
  */
 
-import { AgentInfo, AgentCategory } from './types';
+import { AgentType } from './types';
+
+interface AgentInfo {
+  id: AgentType;
+  displayName: string;
+  excelFormulaName: string;
+  description: string;
+  category: AgentCategory;
+  examplePrompt?: string;
+  usageExamples?: UsageExample[];
+}
+
+interface UsageExample {
+  topic: string;
+  prompt: string;
+}
+
+enum AgentCategory {
+  MarketIntelligence = 'Market Intelligence',
+}
 
 export const OCTAGON_AGENTS: AgentInfo[] = [  
   {
-    id: 'octagon-agent',
+    id: AgentType.OctagonAgent,
     displayName: 'Octagon Agent',
     excelFormulaName: 'OCTAGON.OCTAGON_AGENT',
     description: 'Public and Private market intelligence agent that optimally routes requests to appropriate specialized agents',

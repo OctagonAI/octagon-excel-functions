@@ -12,35 +12,19 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
-// Generic agent response base
-export interface AgentResponse {
-  query: string;
-  timestamp: string;
-  agent: AgentInfo | AgentListing;
-}
-
 // ==================== OPENAI COMPATIBLE TYPES ====================
 
 // OpenAI-style message structure
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
-}
-
-// OpenAI-style chat completion request
-export interface StreamRequest {
-  model: string;
-  messages: ChatMessage[];
-  temperature?: number;
-  max_tokens?: number;
-  stream?: boolean;
 }
 
 // OpenAI-style choice structure
 export interface StreamChoice {
   index: number;
   message: ChatMessage;
-  finish_reason: 'stop' | 'length' | 'function_call' | 'content_filter' | null;
+  finish_reason: "stop" | "length" | "function_call" | "content_filter" | null;
 }
 
 // OpenAI-style usage statistics
@@ -53,7 +37,7 @@ export interface StreamUsage {
 // OpenAI-style responses endpoint response
 export interface StreamResponse {
   id: string;
-  object: 'responses';
+  object: "responses";
   created: number;
   model: string;
   choices: StreamChoice[];
@@ -68,58 +52,26 @@ export interface StreamResponse {
 
 // ==================== AGENT TYPES ====================
 
-export interface AgentInfo {
-  id: string;
-  displayName: string;
-  excelFormulaName: string;
-  description: string;
-  category: AgentCategory;
-  examplePrompt?: string;
-  usageExamples?: UsageExample[];
-}
-
-export interface UsageExample {
-  topic: string;
-  prompt: string;
-}
-
-export enum AgentCategory {
-  MarketIntelligence = 'Market Intelligence',
-  DeepResearch = 'Deep Research'
-}
-
-export enum AgentListing {
-  OctagonAgent = 'octagon-agent',
-  ScraperAgent = 'octagon-scraper-agent',
-  DeepResearchAgent = 'octagon-deep-research-agent'
+export enum AgentType {
+  OctagonAgent = "octagon-agent",
 }
 
 // ==================== REQUEST/RESPONSE TYPES ====================
 
+export interface AgentRequest {
+  model: string;
+  input: string;
+  max_tokens?: number;
+}
+
 // Detailed agent response with content and structured data
-export interface AgentFullResponse {
+export interface AgentResponse {
   content: string;
   // Additional fields that might be in the Octagon API response
   model?: string;
   created?: number;
   id?: string;
   [key: string]: any; // Allow for additional unknown properties
-}
-
-// ==================== AUTHENTICATION & MANAGEMENT TYPES ====================
-
-// API Authentication types
-export interface AuthCredentials {
-  apiKey: string;
-}
-
-// API Key interface
-export interface APIKey {
-  id?: string | null;
-  created_at: string;
-  updated_at?: string | null;
-  name: string;
-  truncated_secret: string;
 }
 
 // ==================== UTILITY TYPES ====================
@@ -154,16 +106,7 @@ export interface ErrorResponse {
   error: {
     code: string;
     message: string;
-    type: 'api_error' | 'rate_limit_exceeded' | 'invalid_request' | 'authentication_error';
+    type: "api_error" | "rate_limit_exceeded" | "invalid_request" | "authentication_error";
     param?: string;
   };
 }
-
-// ==================== EXPORTED CONSTANTS ====================
-
-// Default responses endpoint completion options
-export const DEFAULT_CHAT_OPTIONS = {
-  temperature: 0.7,
-  max_tokens: 1500,
-  stream: true
-} as const;
