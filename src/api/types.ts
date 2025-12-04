@@ -62,6 +62,7 @@ export interface AgentRequest {
   model: string;
   input: string;
   max_tokens?: number;
+  text?: { format: { type: string } };
 }
 
 // Detailed agent response with content and structured data
@@ -79,6 +80,8 @@ export interface AgentResponse {
 // Type aliases for common data structures
 export type Option<T = string> = { value: T; label: string };
 export type Maybe<T> = T | null | undefined;
+
+export type OutputFormat = "raw" | "table" | "single_cell";
 
 // ==================== EXCEL INTEGRATION TYPES ====================
 

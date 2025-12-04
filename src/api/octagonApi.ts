@@ -5,10 +5,10 @@
  */
 
 import Logger from "../utils/logger";
-import { AgentRequest, AgentResponse, AgentType } from "./types";
-
+import { getTextFormat, parseTextFormat } from "./format";
+import { AgentRequest, AgentResponse, AgentType, OutputFormat } from "./types";
 // API Configuration
-const DEFAULT_API_URL = "https://api-gateway.octagonagents.com/v1";
+const DEFAULT_API_URL = "https://octagon-api-gateway-staging.onrender.com";
 
 // SessionStorage key constants
 const API_KEY_STORAGE_NAME = "octagon_api_key";
@@ -115,13 +115,20 @@ export class OctagonApiService {
    * @param prompt - The prompt to send to the agent
    * @returns A promise that resolves to the agent's response
    */
-  public async callAgent(model: string, prompt: string): Promise<string> {
+  public async callAgent(
+    model: string,
+    prompt: string,
+    format?: string
+  ): Promise<Array<Array<string | number>>> {
     Logger.debug(`callAgent invoked with model: ${model}, prompt: ${prompt.substring(0, 50)}...`);
 
     // Validate the prompt
     if (!prompt || prompt.trim() === "") {
       throw new Error("Please provide a valid prompt");
     }
+
+    // Default to table format if no format is provided
+    const textFormat = format ?? "table";
 
     // Ensure add-in has been authenticated
     if (!this.isAuthenticated()) {
@@ -132,8 +139,12 @@ export class OctagonApiService {
     const response = await this.createResponse({
       model,
       input: prompt,
+      // Default to table format if no format is provided
+      text: getTextFormat(textFormat),
     });
-    return response.content || "No response content";
+
+    // Parse the content of the response as a JSON object if it is a table or single cell
+    return parseTextFormat(response.content ?? "No response content", textFormat as OutputFormat);
   }
 
   /**
@@ -249,8 +260,7 @@ export class OctagonApiService {
         throw new Error(`Agent request failed: ${response.status} ${response.statusText}`);
       }
 
-      const streamedResponse = await this.handleStreamedResponse(response);
-      return streamedResponse as AgentResponse;
+      return await this.parseAgentResponse(response);
     } catch (error) {
       throw new Error(
         `Failed to create agent response: ${error instanceof Error ? error.message : "Unknown error"}`
@@ -259,111 +269,30 @@ export class OctagonApiService {
   }
 
   /**
-   * Handle streamed responses from the Octagon API
+   * Parse the agent response from the Octagon API
    * @param response - The fetch response object with streamed data
    * @returns Parsed response data
    */
-  private async handleStreamedResponse(response: Response): Promise<AgentResponse> {
+  private async parseAgentResponse(response: Response): Promise<AgentResponse> {
     try {
       // Get the reader for the stream
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error("Response stream could not be read");
-      }
+      const data = await response.json();
 
-      Logger.debug("Processing streamed response");
-
-      // Variables to collect the response
-      let fullText = "";
-      let finalResponse = null;
-      let parseErrorCount = 0; // Track number of parse errors
-
-      // Process the stream
-      while (true) {
-        try {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          // Convert the chunks to text
-          const chunk = new TextDecoder().decode(value);
-          Logger.debug(
-            "Received stream chunk:",
-            chunk.substring(0, 100) + (chunk.length > 100 ? "..." : "")
-          );
-
-          // Process each line that starts with "data: "
-          const lines = chunk.split("\n");
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const jsonStr = line.substring(6); // Remove 'data: ' prefix
-
-              // Check for the end of stream marker
-              if (jsonStr.trim() === "[DONE]") {
-                Logger.debug("Stream completed [DONE] marker received");
-                continue;
-              }
-
-              try {
-                const data = JSON.parse(jsonStr);
-                Logger.debug("Parsed stream data type:", data.type);
-
-                // Process based on the type of data
-                if (data.type === "response.completed") {
-                  // This is the final response with all data
-                  finalResponse = data.response;
-                  Logger.debug("Final response received");
-                } else if (
-                  data.type === "response.output_text.delta" ||
-                  data.type === "response.output_text.done"
-                ) {
-                  // This is a text delta/update, append to our content
-                  if (data.delta) {
-                    fullText += data.delta;
-                  } else if (data.text) {
-                    fullText = data.text; // This is the complete text
-                  }
-                } else if (data.type === "response.content_part.done" && data.part?.text) {
-                  // Content part with complete text
-                  fullText = data.part.text;
-                } else if (data.response && data.response.output) {
-                  // Store the full response data for direct access
-                  finalResponse = data.response;
-                }
-              } catch (parseError) {
-                parseErrorCount++;
-                Logger.warn(
-                  `Error parsing stream JSON (${parseErrorCount}): ${parseError} - ${jsonStr.substring(0, 100)}`
-                );
-
-                // If we hit too many parse errors, we might be dealing with a bad stream
-                if (parseErrorCount > 5) {
-                  Logger.error("Too many JSON parse errors in stream, aborting");
-                  throw new Error("Stream parsing failed: Too many JSON parse errors");
-                }
-              }
-            }
-          }
-        } catch (streamError) {
-          Logger.error("Error processing stream chunk:", streamError);
-          throw streamError; // Rethrow to be caught by the outer try/catch
+      // Create an empty content string, and append the text of each output message to the content
+      let content = "";
+      for (const output of data.output) {
+        if (output.type !== "message") continue;
+        for (const message of output.content) {
+          if (message.type !== "output_text") continue;
+          content += message.text;
         }
       }
 
-      // Ensure we have some content to return, even if it's empty
-      const transformedResponse = {
-        content: fullText || "",
-        id: finalResponse?.id || "",
-        model: finalResponse?.model || "",
-        created: finalResponse?.created_at || Date.now(),
-        // For compatibility with functions.ts, include the raw response
-        output: finalResponse?.output || [],
-        // Include full response data for more advanced processing if needed
-        rawResponse: finalResponse,
-      };
-
-      Logger.info("Streamed response processed successfully");
-
-      return transformedResponse as AgentResponse;
+      return {
+        content,
+        id: data.id,
+        model: data.model,
+      } as AgentResponse;
     } catch (error) {
       Logger.error("Error processing streamed response:", error);
       throw new Error(

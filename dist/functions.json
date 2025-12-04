@@ -11,42 +11,16 @@
                     "description": "The question or prompt for the Octagon agent",
                     "name": "prompt",
                     "type": "string"
-                }
-            ],
-            "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "Call the Research agent for deep, comprehensive research",
-            "helpUrl": "https://docs.octagonagents.com/guide/agents/deep-research-agent.html",
-            "id": "DEEP_RESEARCH_AGENT",
-            "name": "DEEP_RESEARCH_AGENT",
-            "parameters": [
+                },
                 {
-                    "description": "The question or prompt for the Research agent",
-                    "name": "prompt",
+                    "description": "The format of the response, one of \"raw\", \"table\", or \"single_cell\". Defaults to \"table\".",
+                    "name": "format",
+                    "optional": true,
                     "type": "string"
                 }
             ],
             "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "Call the Scraper agent for web data extraction",
-            "helpUrl": "https://docs.octagonagents.com/guide/agents/scraper-agent.html",
-            "id": "SCRAPER_AGENT",
-            "name": "SCRAPER_AGENT",
-            "parameters": [
-                {
-                    "description": "The question or prompt for the Scraper agent",
-                    "name": "prompt",
-                    "type": "string"
-                }
-            ],
-            "result": {
-                "type": "string"
+                "dimensionality": "matrix"
             }
         }
     ]

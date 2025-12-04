@@ -31,13 +31,20 @@ Office.onReady(() => {
  * Call the Market Intelligence agent that routes to appropriate specialized agents
  * @customfunction OCTAGON_AGENT
  * @param prompt The question or prompt for the Octagon agent
+ * @param format The format of the response, one of "raw", "table", or "single_cell". Defaults to "table".
  * @helpUrl https://docs.octagonagents.com/guide/agents/octagon-agent.html
- * @returns A string containing the agent's response
+ * @returns String, json object, or single cell value
  */
-export async function OCTAGON_AGENT(prompt: string): Promise<string> {
+export async function OCTAGON_AGENT(
+  prompt: string,
+  format?: string
+): Promise<Array<Array<string | number>>> {
   try {
-    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt);
+    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt, format);
   } catch (error) {
+    if (error instanceof CustomFunctions.Error) {
+      throw error;
+    }
     // Throw a custom error with the error message
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.notAvailable,
