@@ -433,7 +433,7 @@ function createAgentCard(agent: (typeof OCTAGON_AGENTS)[0]): HTMLElement {
           }, 1500);
         })
         .catch((err) => {
-          console.error("Could not copy text: ", err);
+          Logger.error("Could not copy text: ", err);
         });
     };
 
@@ -496,7 +496,7 @@ function createAgentCard(agent: (typeof OCTAGON_AGENTS)[0]): HTMLElement {
             }, 1500);
           })
           .catch((err) => {
-            console.error("Could not copy text: ", err);
+            Logger.error("Could not copy text: ", err);
           });
       };
 
@@ -537,8 +537,6 @@ function showApiSupportWarning(issues: string[]) {
   if (!warningDiv) return;
 
   (warningDiv as HTMLElement).style.display = "inline-block";
-
-  console.log("showing api support warning", issues);
 
   if (issues.length > 0) {
     const warningMessage = warningDiv.firstElementChild;
