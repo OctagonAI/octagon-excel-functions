@@ -1,3 +1,5 @@
+/* global CustomFunctions */
+
 import Logger from "../utils/logger";
 import type { OutputFormat } from "./types";
 
