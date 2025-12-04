@@ -3,26 +3,23 @@
  * This file handles the UI and interaction for the Octagon Excel Add-in taskpane
  */
 
-import { OCTAGON_AGENTS, octagonApi } from "../api";
+import { OCTAGON_AGENTS, OctagonApiService } from "../api";
 import { checkRequiredApiSupport, detectIE } from "../utils/browserSupport";
 import Logger from "../utils/logger";
 
 // Track the application state
-let isAuthenticated = false;
+const octagonApi = new OctagonApiService();
 
 // Initialize the taskpane when Office is ready
-Office.onReady(async (info) => {
+Office.onReady(async () => {
   try {
     Logger.info("Office is ready - initializing Octagon taskpane");
-
-    // Initialize the API service
-    octagonApi.initialize();
 
     // Add event listeners to UI elements
     setupEventListeners();
 
     // Show auth view first (this ensures UI is visible)
-    checkApiKeyStatus();
+    await checkAuthentication();
 
     // Check browser compatibility
     if (detectIE()) {
@@ -130,20 +127,17 @@ function showAuthView() {
 /**
  * Check the status of the API key and update the UI accordingly
  */
-function checkApiKeyStatus() {
-  const hasStoredKey = octagonApi.checkForStoredApiKey();
+async function checkAuthentication() {
+  const isAuthenticated = await octagonApi.isAuthenticated();
 
-  if (hasStoredKey) {
-    // If we have a stored key, hide the status message but log it
-    Logger.info("API Key detected from previous sessions");
-
-    // Set authenticated state
-    isAuthenticated = true;
+  if (isAuthenticated) {
+    // If the api service is authenticated, show the agents view
+    Logger.info("Authentication successful");
 
     // Automatically proceed to the Main Menu after a brief delay
     setTimeout(() => showAgentsView(), 500);
   } else {
-    // No API key detected, show the authentication view
+    // If the api service is not authenticated, show the authentication view
     showAuthView();
   }
 }
@@ -151,7 +145,7 @@ function checkApiKeyStatus() {
 /**
  * Handle the Submit button click
  */
-function handleSubmit() {
+async function handleSubmit() {
   try {
     // Get the API key from the input field
     const apiKeyInput = document.getElementById("api-key-input") as HTMLInputElement;
@@ -164,16 +158,21 @@ function handleSubmit() {
 
     // TODO: Test connection before saving
     // Set and persist the API key
-    octagonApi.setApiKey(apiKey);
+    await octagonApi.setApiKey(apiKey);
 
     // Success - show success message and enable continue button
     clearAuthError();
     showAuthSuccess("API Key saved successfully!");
-    isAuthenticated = true;
 
     // Automatically proceed to the Main Menu after a brief delay
     // This gives the user a chance to see the success message first
-    setTimeout(() => showAgentsView(), 800);
+    setTimeout(() => {
+      // Clear the input field before showing the agents view
+      apiKeyInput.value = "";
+      updateButtonStates();
+
+      showAgentsView();
+    }, 800);
   } catch (error) {
     // Show error message
     showAuthError("An error occurred while saving the API key. Please try again.");
@@ -226,10 +225,9 @@ async function handleTestConnection() {
 /**
  * Handle the Back to Login button click
  */
-function handleLogout() {
+async function handleLogout() {
   // Clear the API key
-  octagonApi.clearApiKey();
-  isAuthenticated = false;
+  await octagonApi.clearApiKey();
   Logger.info("API Key cleared");
 
   // Redirect to the login page after a brief delay

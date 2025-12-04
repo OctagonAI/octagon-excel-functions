@@ -1,3 +1,3 @@
 export { OCTAGON_AGENTS } from "./agents";
-export { octagonApi } from "./octagonApi";
+export { OctagonApiService } from "./octagonApi";
 export { AgentType } from "./types";
