@@ -59,7 +59,7 @@ export class OctagonApiService {
   public async callAgent(
     model: string,
     prompt: string,
-    format?: string
+    format: string
   ): Promise<Array<Array<string | number>>> {
     Logger.debug(`callAgent invoked with model: ${model}, prompt: ${prompt.substring(0, 50)}...`);
 
@@ -67,9 +67,6 @@ export class OctagonApiService {
     if (!prompt || prompt.trim() === "") {
       throw new Error("Please provide a valid prompt");
     }
-
-    // Default to table format if no format is provided
-    const textFormat = format ?? "table";
 
     // Ensure add-in has been authenticated
     if (!(await this.isAuthenticated())) {
@@ -80,12 +77,11 @@ export class OctagonApiService {
     const response = await this.createResponse({
       model,
       input: prompt,
-      // Default to table format if no format is provided
-      text: getTextFormat(textFormat),
+      text: getTextFormat(format),
     });
 
     // Parse the content of the response as a JSON object if it is a table or single cell
-    return parseTextFormat(response.content ?? "No response content", textFormat as OutputFormat);
+    return parseTextFormat(response.content ?? "No response content", format as OutputFormat);
   }
 
   /**

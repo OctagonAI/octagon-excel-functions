@@ -39,10 +39,12 @@ Office.onReady(async () => {
  */
 export async function OCTAGON_AGENT(
   prompt: string,
-  format?: string
+  format: string | null = null
 ): Promise<Array<Array<string | number>>> {
   try {
-    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt, format.toLowerCase());
+    // Default to table format if no format is provided
+    const agentFormat = format ? format.toLowerCase() : "table";
+    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt, agentFormat);
   } catch (error) {
     if (error instanceof CustomFunctions.Error) {
       throw error;

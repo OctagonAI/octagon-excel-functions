@@ -18,7 +18,7 @@ Office.onReady(async () => {
     // Add event listeners to UI elements
     setupEventListeners();
 
-    // Show auth view first (this ensures UI is visible)
+    // Check authentication status and show the appropriate view
     await checkAuthentication();
 
     // Check browser compatibility
