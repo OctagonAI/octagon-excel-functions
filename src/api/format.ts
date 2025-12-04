@@ -79,7 +79,7 @@ export function parseTextFormat(
       return JSON.parse(content).data ?? defaultResponse;
     } else if (format == "cell") {
       const data = JSON.parse(content).data;
-      return data ? [[data]] : defaultResponse;
+      return data !== undefined ? [[data]] : defaultResponse;
     } else {
       return [[content]];
     }
