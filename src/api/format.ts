@@ -71,17 +71,21 @@ export function parseTextFormat(
   content: string,
   format: OutputFormat
 ): Array<Array<string | number>> {
+  // Default response is a single row with a single cell containing "No response content"
+  const defaultResponse = [["No response content"]];
+
   try {
     if (format == "table") {
-      return JSON.parse(content).data;
+      return JSON.parse(content).data ?? defaultResponse;
     } else if (format == "cell") {
-      return [[JSON.parse(content).data]];
+      const data = JSON.parse(content).data;
+      return data ? [[data]] : defaultResponse;
     } else {
       return [[content]];
     }
   } catch (error) {
     // Fallback if content is not valid JSON for table and single cell format
     Logger.error("Error parsing text format:", { error, content, format });
-    return [["No response content"]];
+    return defaultResponse;
   }
 }
