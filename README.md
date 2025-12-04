@@ -7,7 +7,7 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 ## Features
 
 - **🔑 API Integration**: Securely use your Octagon AI API key
-- **📊 Custom Excel Functions**: Call specialized AI agents with `=OCTAGON.OCTAGON_AGENT()`, `=OCTAGON.DEEP_RESEARCH_AGENT()`, and more
+- **📊 Custom Excel Functions**: Call specialized AI agents
 - **🔄 Smart Routing**: The main Octagon Agent automatically routes queries to the most appropriate specialized agent
 - **🔍 Deep Research**: Access comprehensive research on financial topics
 - **🌐 Web Scraping**: Extract structured data from websites
@@ -23,9 +23,17 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 
 ## Available Functions
 
-### 🔄 **Smart Router**
+### 🔄 **Octagon Agent**
 
-- **`OCTAGON.OCTAGON_AGENT(prompt)`** - Intelligent router that automatically selects the best specialized agent for your query
+- **`OCTAGON.AGENT(prompt, [format])`** - Intelligent router that automatically selects the best specialized agent for your query
+
+Where `prompt` parameter is the question or prompt for the Octagon agent and `format` parameter is the format of the response, one of "raw", "table", or "cell". Defaults to "table".
+
+#### Format Options
+
+- "raw" - Returns unmodified text response from the agent. Useful for testing or generating text-based content.
+- "table" - Suitable for generating tabular data spanning multiple cells
+- "cell" - Force the response to be a single cell value
 
 ## Usage
 
@@ -36,7 +44,7 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 ### Examples
 
 ```
-=OCTAGON.OCTAGON_AGENT("Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY.")
+=OCTAGON.AGENT("Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY.")
 ```
 
 <!-- prettier-ignore -->

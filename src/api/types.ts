@@ -81,7 +81,7 @@ export interface AgentResponse {
 export type Option<T = string> = { value: T; label: string };
 export type Maybe<T> = T | null | undefined;
 
-export type OutputFormat = "raw" | "table" | "single_cell";
+export type OutputFormat = "raw" | "table" | "cell";
 
 // ==================== EXCEL INTEGRATION TYPES ====================
 

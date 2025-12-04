@@ -51,7 +51,7 @@ const SINGLE_CELL_FORMAT = {
 const formatMap: Record<OutputFormat, { format: { type: string } }> = {
   raw: RAW_TEXT,
   table: TABLE_FORMAT,
-  single_cell: SINGLE_CELL_FORMAT,
+  cell: SINGLE_CELL_FORMAT,
 };
 
 export function getTextFormat(format: string): { format: { type: string } } {
@@ -60,7 +60,7 @@ export function getTextFormat(format: string): { format: { type: string } } {
     Logger.error(`Invalid format: ${format}`);
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
-      'Invalid format. Please use "raw", "table", or "single_cell"'
+      'Invalid format. Please use "raw", "table", or "cell"'
     );
   }
 
@@ -74,7 +74,7 @@ export function parseTextFormat(
   try {
     if (format == "table") {
       return JSON.parse(content).data;
-    } else if (format == "single_cell") {
+    } else if (format == "cell") {
       return [[JSON.parse(content).data]];
     } else {
       return [[content]];

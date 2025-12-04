@@ -5,19 +5,21 @@
  * This file defines custom functions that expose Octagon's AI agents as Excel formulas
  */
 
-import { AgentType, octagonApi } from "../api";
+import { AgentType, OctagonApiService } from "../api";
 import Logger from "../utils/logger";
+
+const octagonApi = new OctagonApiService();
 
 /**
  * Initializes the Octagon API and registers custom functions
  * This is automatically called when the add-in is initialized with SharedRuntime
  */
-Office.onReady(() => {
+Office.onReady(async () => {
   try {
     Logger.debug("Office is ready - initializing Octagon functions");
 
     // Register functions namespaced under OCTAGON
-    CustomFunctions.associate("OCTAGON.OCTAGON_AGENT", OCTAGON_AGENT);
+    CustomFunctions.associate("OCTAGON.AGENT", OCTAGON_AGENT);
   } catch (error) {
     Logger.error("Error during initialization:", error);
   }
@@ -29,18 +31,18 @@ Office.onReady(() => {
 
 /**
  * Call the Market Intelligence agent that routes to appropriate specialized agents
- * @customfunction OCTAGON_AGENT
+ * @customfunction AGENT
  * @param prompt The question or prompt for the Octagon agent
- * @param format The format of the response, one of "raw", "table", or "single_cell". Defaults to "table".
+ * @param format The format of the response, one of "raw", "table", or "cell". Defaults to "table".
  * @helpUrl https://docs.octagonagents.com/guide/agents/octagon-agent.html
- * @returns String, json object, or single cell value
+ * @returns array of arrays of strings or numbers
  */
 export async function OCTAGON_AGENT(
   prompt: string,
   format?: string
 ): Promise<Array<Array<string | number>>> {
   try {
-    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt, format);
+    return await octagonApi.callAgent(AgentType.OctagonAgent, prompt, format.toLowerCase());
   } catch (error) {
     if (error instanceof CustomFunctions.Error) {
       throw error;
