@@ -42,7 +42,7 @@ export class OctagonApiService {
 
     // Save the API key to OfficeRuntime.storage
     try {
-      await OfficeRuntime.storage.setItem(API_KEY_STORAGE_NAME, apiKey);
+      await OfficeRuntime.storage.setItem(API_KEY_STORAGE_NAME, trimmedKey);
       Logger.debug("API key saved to OfficeRuntime.storage");
     } catch (error) {
       Logger.error("Failed to save API key to OfficeRuntime.storage", error);
@@ -81,7 +81,7 @@ export class OctagonApiService {
     });
 
     // Parse the content of the response as a JSON object if it is a table or single cell
-    return parseTextFormat(response.content ?? "No response content", format as OutputFormat);
+    return parseTextFormat(response.content || "No response content", format as OutputFormat);
   }
 
   /**
@@ -183,10 +183,25 @@ export class OctagonApiService {
       // Get the reader for the stream
       const data = await response.json();
 
+      // Ensure the response is in the expected format
+      if (!data.output || !Array.isArray(data.output)) {
+        Logger.warn("Unexpected response format: missing output array", data);
+        return {
+          content: "",
+          id: data?.id,
+          model: data?.model,
+        } as AgentResponse;
+      }
+
       // Create an empty content string, and append the text of each output message to the content
       let content = "";
+
       for (const output of data.output) {
         if (output.type !== "message") continue;
+        // Ensure the content is in the expected format
+        if (!output.content || !Array.isArray(output.content)) continue;
+
+        // Add the text of each output message to the content
         for (const message of output.content) {
           if (message.type !== "output_text") continue;
           content += message.text;
@@ -208,8 +223,6 @@ export class OctagonApiService {
    * Test API key validity with a simple request
    */
   public async testConnection(apiKey: string): Promise<boolean> {
-    Logger.info("Testing API connection with stored key");
-
     const request = {
       model: AgentType.OctagonAgent,
       input: "Test connection",
@@ -217,6 +230,7 @@ export class OctagonApiService {
     };
 
     try {
+      // Test the connection with the provided API key
       await this.createResponse(request, apiKey);
       return true;
     } catch (error) {
