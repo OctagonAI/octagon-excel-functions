@@ -39,7 +39,7 @@ Office.onReady(async () => {
  */
 export async function OCTAGON_AGENT(
   prompt: string,
-  format: string | null = null
+  format?: string
 ): Promise<Array<Array<string | number>>> {
   try {
     // Default to table format if no format is provided
