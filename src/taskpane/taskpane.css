@@ -31,11 +31,10 @@
    /* Header */
 
    .octagon-header {
-      padding: 16px;
+      padding: 16px 16px 0 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
    }
 
    .octagon-header h1 {
@@ -350,7 +349,7 @@
   margin-bottom: 20px;
 }
 
-.back-to-login-button {
+.back-button-container > .ms-Button {
   display: flex;
   align-items: center;
   color: #666;
@@ -362,13 +361,13 @@
   transition: color 0.2s;
 }
 
-.back-to-login-button:hover {
+.back-button-container > .ms-Button:hover {
   color: #0078d4;
   text-decoration: none;
   background-color: #f5f5f5;
 }
 
-.back-to-login-button .ms-Button-icon {
+.ms-Button-icon {
   margin-right: 4px;
   font-size: 12px;
 }
@@ -395,28 +394,6 @@
   margin-bottom: 20px;
 }
 
-.continue-to-menu-button {
-  display: flex;
-  align-items: center;
-  color: #0078d4;
-  background-color: transparent;
-  border: none;
-  padding: 8px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.continue-to-menu-button:hover {
-  background-color: #f5f5f5;
-  text-decoration: none;
-}
-
-.continue-to-menu-button .ms-Button-icon {
-  margin-left: 4px;
-  font-size: 12px;
-}
-
 /* Ensure the auth view container has relative positioning */
 #auth-view {
   position: relative;
@@ -433,28 +410,6 @@
   justify-content: center;
   margin-top: 30px;
   margin-bottom: 20px;
-}
-
-.continue-to-menu-button {
-  display: flex;
-  align-items: center;
-  color: #0078d4;
-  background-color: transparent;
-  border: none;
-  padding: 8px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.continue-to-menu-button:hover {
-  background-color: #f5f5f5;
-  text-decoration: none;
-}
-
-.continue-to-menu-button .ms-Button-icon {
-  margin-left: 4px;
-  font-size: 12px;
 }
 
 /* Ensure the auth view container has relative positioning */
@@ -550,26 +505,24 @@
   display: flex;
   align-items: flex-start;
   padding: 12px;
-  margin-bottom: 16px;
   background-color: #FFF4CE;
   border-left: 4px solid #FFB900;
   color: #323130;
 }
 
 .warning-icon {
-  margin-right: 12px;
-  font-size: 16px;
+  margin-right: 4px;
+  font-size: 12px;
   color: #FFB900;
 }
 
 .warning-message {
   flex: 1;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .warning-message ul {
   margin: 8px 0 0 0;
-  padding-left: 16px;
 }
 
 .warning-message li {

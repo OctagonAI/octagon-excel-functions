@@ -7,7 +7,7 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 ## Features
 
 - **🔑 API Integration**: Securely use your Octagon AI API key
-- **📊 Custom Excel Functions**: Call specialized AI agents with `=OCTAGON.OCTAGON_AGENT()`, `=OCTAGON.DEEP_RESEARCH_AGENT()`, and more
+- **📊 Custom Excel Functions**: Call specialized AI agents
 - **🔄 Smart Routing**: The main Octagon Agent automatically routes queries to the most appropriate specialized agent
 - **🔍 Deep Research**: Access comprehensive research on financial topics
 - **🌐 Web Scraping**: Extract structured data from websites
@@ -23,29 +23,28 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 
 ## Available Functions
 
-### 🔄 **Smart Router**
+### 🔄 **Octagon Agent**
 
-- **`OCTAGON.OCTAGON_AGENT(prompt)`** - Intelligent router that automatically selects the best specialized agent for your query
+- **`OCTAGON.AGENT(prompt, [format])`** - Intelligent router that automatically selects the best specialized agent for your query
 
-### 🔍 **Research Agents**
+Where `prompt` parameter is the question or prompt for the Octagon agent and `format` parameter is the format of the response, one of "raw", "table", or "cell". Defaults to "table".
 
-- **`OCTAGON.DEEP_RESEARCH_AGENT(prompt)`** - Conducts in-depth research on financial topics
-- **`OCTAGON.SCRAPER_AGENT(prompt)`** - Extracts data from websites
+#### Format Options
+
+- "raw" - Returns unmodified text response from the agent. Useful for testing or generating text-based content.
+- "table" - Suitable for generating tabular data spanning multiple cells
+- "cell" - Force the response to be a single cell value
 
 ## Usage
 
 ### ⚠️ Getting Started
 
-- This Add-In is currently undergoing Microsoft's review before being published to AppSource. Soon enough, you'll be able to use it directly from 
+- This Add-In is currently undergoing Microsoft's review before being published to AppSource. Soon enough, you'll be able to use it directly from
 
 ### Examples
 
 ```
-=OCTAGON.DEEP_RESEARCH_AGENT("Research the financial impact of Apple privacy changes on digital advertising companies revenue and margins")
-
-=OCTAGON.SCRAPER_AGENT("Extract all data fields from zillow.com/san-francisco-ca/ max_pages:2, country:us")
-
-=OCTAGON.OCTAGON_AGENT("Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY.")
+=OCTAGON.AGENT("Retrieve year-over-year growth in key income-statement items for AAPL, limited to 5 records and filtered by period FY.")
 ```
 
 <!-- prettier-ignore -->
@@ -64,12 +63,14 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/OctagonAI/octagon-excel-functions.git
    cd <your-directory>
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -80,6 +81,7 @@ An Excel add-in that integrates [Octagon's AI Agents API](https://docs.octagonag
    ```
 
 This command:
+
 1. Builds the project
 2. Starts a local HTTPS server on port 3000
 3. Opens Excel and sideloads the add-in
@@ -94,6 +96,7 @@ This command:
 ## Local vs Production
 
 This repository contains two manifest files:
+
 - `manifest-local.xml` - For local development with localhost URLs
 - `manifest.xml` - For production deployment with GitHub Pages URLs
 
