@@ -6,34 +6,14 @@
  */
 
 import { AgentType, OctagonApiService } from "../api";
-import Logger from "../utils/logger";
 
 const octagonApi = new OctagonApiService();
-
-/**
- * Initializes the Octagon API and registers custom functions
- * This is automatically called when the add-in is initialized with SharedRuntime
- */
-Office.onReady(async () => {
-  try {
-    Logger.debug("Office is ready - initializing Octagon functions");
-
-    // Register functions namespaced under OCTAGON
-    CustomFunctions.associate("OCTAGON.AGENT", OCTAGON_AGENT);
-  } catch (error) {
-    Logger.error("Error during initialization:", error);
-  }
-});
-
-// ===============================================================
-// Market Intelligence Agent
-// ===============================================================
 
 /**
  * Call the Market Intelligence agent that routes to appropriate specialized agents
  * @customfunction AGENT
  * @param prompt The question or prompt for the Octagon agent
- * @param format The format of the response, one of "raw", "table", or "cell". Defaults to "table".
+ * @param format optional output format with possible values of 'table' (default), 'cell', or 'raw'.
  * @helpUrl https://docs.octagonagents.com/guide/agents/octagon-agent.html
  * @returns array of arrays of strings or numbers
  */

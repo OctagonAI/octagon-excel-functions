@@ -13,7 +13,7 @@
                     "type": "string"
                 },
                 {
-                    "description": "The format of the response, one of \"raw\", \"table\", or \"cell\". Defaults to \"table\".",
+                    "description": "optional output format with possible values of 'table' (default), 'cell', or 'raw'.",
                     "name": "format",
                     "optional": true,
                     "type": "string"

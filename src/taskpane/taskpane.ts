@@ -3,11 +3,13 @@
  * This file handles the UI and interaction for the Octagon Excel Add-in taskpane
  */
 
-import { OCTAGON_AGENTS, OctagonApiService } from "../api";
+import { OctagonApiService } from "../api";
 import { checkRequiredApiSupport, detectIE } from "../utils/browserSupport";
 import Logger from "../utils/logger";
+import { createAgentExamplesFragment } from "./examples";
 
 // Track the application state
+let agentsExamplesInitialized = false;
 const octagonApi = new OctagonApiService();
 
 // Initialize the taskpane when Office is ready
@@ -317,200 +319,18 @@ function showAgentsView() {
 }
 
 /**
- * Populate the agents list with categories and agent cards
+ * Populate the agents card with examples
  */
 function populateAgentsList() {
-  const container = document.getElementById("agent-categories-container");
+  // Only populate the agents list on first call
+  if (agentsExamplesInitialized) return;
 
-  if (!container) return;
-
-  // Clear the container
-  container.innerHTML = "";
-
-  // Group agents by category
-  const agentsByCategory = groupAgentsByCategory();
-
-  // Create a section for each category
-  for (const [category, agents] of Object.entries(agentsByCategory)) {
-    // Create category container
-    const categoryElement = document.createElement("div");
-    categoryElement.className = "agent-category";
-
-    // Create category title
-    const titleElement = document.createElement("h3");
-    titleElement.className = "category-title";
-    titleElement.textContent = category;
-    categoryElement.appendChild(titleElement);
-
-    // Create agent cards for this category
-    agents.forEach((agent) => {
-      const agentCard = createAgentCard(agent);
-      categoryElement.appendChild(agentCard);
-    });
-
-    // Add the category to the container
-    container.appendChild(categoryElement);
+  const agentCard = document.getElementById("agent-card");
+  if (agentCard) {
+    const usageExamples = createAgentExamplesFragment();
+    agentCard.appendChild(usageExamples);
+    agentsExamplesInitialized = true;
   }
-}
-
-/**
- * Group agents by their category
- * @returns Record<string, typeof OCTAGON_AGENTS[0][]>
- */
-function groupAgentsByCategory() {
-  const categories: Record<string, (typeof OCTAGON_AGENTS)[0][]> = {};
-
-  OCTAGON_AGENTS.forEach((agent) => {
-    if (!categories[agent.category]) {
-      categories[agent.category] = [];
-    }
-    categories[agent.category].push(agent);
-  });
-
-  return categories;
-}
-
-/**
- * Create an agent card element
- * @param agent Agent information
- * @returns HTMLElement The agent card
- */
-function createAgentCard(agent: (typeof OCTAGON_AGENTS)[0]): HTMLElement {
-  const card = document.createElement("div");
-  card.className = "agent-card";
-
-  // Agent title
-  const title = document.createElement("h4");
-  title.className = "agent-title";
-  title.textContent = agent.displayName;
-  card.appendChild(title);
-
-  // Agent description
-  const description = document.createElement("p");
-  description.className = "agent-description";
-  description.textContent = agent.description;
-  card.appendChild(description);
-
-  // Agent metadata
-  const meta = document.createElement("div");
-  meta.className = "agent-meta";
-
-  // Formula name
-  const formula = document.createElement("div");
-  formula.innerHTML = `<strong>Excel Formula:</strong> <span class="formula-name">${agent.excelFormulaName}("your prompt")</span>`;
-  meta.appendChild(formula);
-
-  // Example prompt
-  if (agent.examplePrompt) {
-    const example = document.createElement("div");
-    example.innerHTML = `<strong>Example:</strong>`;
-
-    // Create a container for the prompt to allow positioning the copy button
-    const promptContainer = document.createElement("div");
-    promptContainer.style.position = "relative";
-    promptContainer.style.display = "inline-block";
-    promptContainer.style.width = "100%";
-
-    const promptElement = document.createElement("span");
-    promptElement.className = "example-prompt";
-    promptElement.textContent = agent.examplePrompt;
-    promptContainer.appendChild(promptElement);
-
-    // Add copy button for the example prompt
-    const copyButton = document.createElement("button");
-    copyButton.className = "copy-button";
-    copyButton.title = "Copy example";
-    copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
-    copyButton.onclick = (e) => {
-      e.stopPropagation();
-      navigator.clipboard
-        .writeText(agent.examplePrompt)
-        .then(() => {
-          // Show success feedback
-          copyButton.innerHTML = '<i class="ms-Icon ms-Icon--CheckMark copy-success"></i>';
-          setTimeout(() => {
-            copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
-          }, 1500);
-        })
-        .catch((err) => {
-          Logger.error("Could not copy text: ", err);
-        });
-    };
-
-    promptContainer.appendChild(copyButton);
-    example.appendChild(promptContainer);
-    meta.appendChild(example);
-  }
-
-  card.appendChild(meta);
-
-  // Usage examples section (if available)
-  if (agent.usageExamples && agent.usageExamples.length > 0) {
-    const usageSection = document.createElement("div");
-    usageSection.className = "usage-examples-section";
-
-    // Usage examples heading
-    const usageHeading = document.createElement("h5");
-    usageHeading.className = "usage-heading";
-    usageHeading.textContent = "Usage Examples:";
-    usageSection.appendChild(usageHeading);
-
-    // Create a list for the examples
-    const examplesList = document.createElement("div");
-    examplesList.className = "examples-list";
-
-    // Add each example to the list
-    agent.usageExamples.forEach((example) => {
-      const exampleItem = document.createElement("div");
-      exampleItem.className = "example-item";
-
-      const topicElement = document.createElement("div");
-      topicElement.className = "example-topic";
-      topicElement.textContent = example.topic;
-      exampleItem.appendChild(topicElement);
-
-      // Create a container for the prompt to allow positioning the copy button
-      const promptContainer = document.createElement("div");
-      promptContainer.className = "example-prompt-container";
-      promptContainer.style.position = "relative";
-
-      const promptElement = document.createElement("div");
-      promptElement.className = "example-prompt code";
-      promptElement.textContent = example.prompt;
-      promptContainer.appendChild(promptElement);
-
-      // Add copy button
-      const copyButton = document.createElement("button");
-      copyButton.className = "copy-button";
-      copyButton.title = "Copy example";
-      copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
-      copyButton.onclick = (e) => {
-        e.stopPropagation();
-        navigator.clipboard
-          .writeText(example.prompt)
-          .then(() => {
-            // Show success feedback
-            copyButton.innerHTML = '<i class="ms-Icon ms-Icon--CheckMark copy-success"></i>';
-            setTimeout(() => {
-              copyButton.innerHTML = '<i class="ms-Icon ms-Icon--Copy"></i>';
-            }, 1500);
-          })
-          .catch((err) => {
-            Logger.error("Could not copy text: ", err);
-          });
-      };
-
-      promptContainer.appendChild(copyButton);
-      exampleItem.appendChild(promptContainer);
-
-      examplesList.appendChild(exampleItem);
-    });
-
-    usageSection.appendChild(examplesList);
-    card.appendChild(usageSection);
-  }
-
-  return card;
 }
 
 /**

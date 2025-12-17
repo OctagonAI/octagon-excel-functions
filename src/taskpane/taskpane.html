@@ -27,8 +27,7 @@
     </div>
 
     <header class="octagon-header">
-        <img width="80" height="80" src="../../assets/icon-80.png" alt="Octagon AI" title="Octagon AI" />
-        <h1>Octagon AI</h1>
+        <img width="100%" src="../../assets/octagon-logo.png" alt="Octagon AI" title="Octagon AI" />
     </header>
 
     <!-- Authentication View -->
@@ -65,60 +64,77 @@
             </div>
         </div>
 
-        <!-- Footer for Auth View -->
-        <div class="footer">
-            <div class="version">Version 1.1</div>
-            <div class="footer-links">
-                <a href="https://www.octagonai.co/terms-of-service" target="_blank">Terms of Service</a> |
-                <a href="https://www.octagonai.co/privacy" target="_blank">Privacy</a> |
-                <a href="mailto:contact@octagonai.co">Contact</a> |
-                <a href="https://app.octagonagents.com/playground" target="_blank">API Playground</a>
-            </div>
-        </div>
     </main>
 
     <!-- Agents List View -->
     <main id="agents-view" class="main-content" style="display: none;">
         <div class="content-container">
 
-            <!-- Agent categories will be dynamically generated here -->
-            <div id="agent-categories-container"></div>
+            <div>
+                <div id="agent-card">
+                    <h4 class="agent-title">Octagon Agent</h4>
+                    <p class="agent-description">Public and Private market intelligence agent that optimally routes
+                        requests to appropriate specialized agents</p>
+                    <div class="agent-meta">
+                        <div>
+                            <strong>Function:</strong>
+                            <span class="formula-name">OCTAGON.AGENT(prompt, [format])</span>
+                            <div class="formula-argument">
+                                <code>prompt</code> is the question or prompt for the Octagon agent
+                            </div>
+                            <div class="formula-argument">
+                                <code>[format]</code> optional output format with possible values of 'table' (default),
+                                'cell', or 'raw'.
+                                <br />
+                            </div>
+                            <div>
+                                Use 'table' for generating tabular data spanning multiple cells, 'cell' for a single
+                                cell value, and 'raw' for more verbose text-based content.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="usage-examples-section">
+                        <h5 class="usage-heading">Usage Examples:</h5>
+                    </div>
+                    <!-- Agent categories will be dynamically generated here -->
+                </div>
 
-            <div class="back-button-container">
-                <button id="back-to-login-button" class="ms-Button ms-Button--default">
-                    <span class="ms-Button-icon">
-                        <i class="ms-Icon ms-Icon--ChevronLeft"></i>
-                    </span>
-                    <span class="ms-Button-label">Back to Login</span>
-                </button>
+                <div class="back-button-container">
+                    <button id="back-to-login-button" class="ms-Button ms-Button--default">
+                        <span class="ms-Button-icon">
+                            <i class="ms-Icon ms-Icon--SignOut"></i>
+                        </span>
+                        <span class="ms-Button-label">Logout</span>
+                    </button>
+                </div>
+
+                <!-- Additional Resources Section -->
+                <div class="additional-resources">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li>
+                            <i class="ms-Icon ms-Icon--ReadingMode"></i>
+                            <a href="https://docs.octagonagents.com/" target="_blank">Official Documentation</a>
+                        </li>
+                        <li>
+                            <i class="ms-Icon ms-Icon--TestBeaker"></i>
+                            <a href="https://app.octagonai.co/playground" target="_blank">API Playground</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Additional Resources Section -->
-            <div class="additional-resources">
-                <h3>Resources</h3>
-                <ul>
-                    <li>
-                        <i class="ms-Icon ms-Icon--ReadingMode"></i>
-                        <a href="https://docs.octagonagents.com/" target="_blank">Official Documentation</a>
-                    </li>
-                    <li>
-                        <i class="ms-Icon ms-Icon--TestBeaker"></i>
-                        <a href="https://app.octagonagents.com/playground" target="_blank">API Playground</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Footer for Agents View -->
-        <div class="footer">
-            <div class="version">Version 1.1</div>
-            <div class="footer-links">
-                <a href="https://www.octagonai.co/terms-of-service" target="_blank">Terms of Service</a> |
-                <a href="https://www.octagonai.co/privacy" target="_blank">Privacy</a> |
-                <a href="mailto:contact@octagonai.co">Contact</a>
-            </div>
-        </div>
     </main>
+
+    <!-- Octagon Footer -->
+    <div class="footer">
+        <div class="version">Version 1.2</div>
+        <div class="footer-links">
+            <a href="https://www.octagonai.co/terms-of-service" target="_blank">Terms of Service</a> |
+            <a href="https://www.octagonai.co/privacy" target="_blank">Privacy</a> |
+            <a href="mailto:contact@octagonai.co">Contact</a>
+        </div>
+    </div>
 </body>
 
 </html>
