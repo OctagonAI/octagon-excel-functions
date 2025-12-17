@@ -181,7 +181,7 @@
       margin-bottom: 12px;
    }
 
-   .agent-card {
+   #agent-card {
       background-color: #f9f9f9;
       border-radius: 4px;
       padding: 16px;
@@ -216,6 +216,23 @@
       padding: 2px 4px;
       border-radius: 2px;
       display: inline-block;
+      margin-bottom: 8px;
+   }
+
+   .formula-argument {
+      font-size: 12px;
+      padding: 4px 6px;
+      border-radius: 2px;
+      margin-bottom: 2px;
+   }
+
+   /* Alternate background colors for argument rows */
+   .agent-meta .formula-argument:nth-of-type(odd) {
+      background-color: #fdfdfd;
+   }
+   
+   .agent-meta .formula-argument:nth-of-type(even) {
+      background-color: #f3f2f1;
    }
 
    /* Usage examples styling */
