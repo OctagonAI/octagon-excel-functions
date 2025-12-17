@@ -6,9 +6,10 @@
 import { OctagonApiService } from "../api";
 import { checkRequiredApiSupport, detectIE } from "../utils/browserSupport";
 import Logger from "../utils/logger";
-import { AGENTS_EXAMPLES_FRAGMENT } from "./examples";
+import { createAgentExamplesFragment } from "./examples";
 
 // Track the application state
+let agentsExamplesInitialized = false;
 const octagonApi = new OctagonApiService();
 
 // Initialize the taskpane when Office is ready
@@ -317,11 +318,18 @@ function showAgentsView() {
   }
 }
 
+/**
+ * Populate the agents card with examples
+ */
 function populateAgentsList() {
+  // Only populate the agents list on first call
+  if (agentsExamplesInitialized) return;
+
   const agentCard = document.getElementById("agent-card");
-  console.info("agentCard", agentCard);
   if (agentCard) {
-    agentCard.appendChild(AGENTS_EXAMPLES_FRAGMENT);
+    const usageExamples = createAgentExamplesFragment();
+    agentCard.appendChild(usageExamples);
+    agentsExamplesInitialized = true;
   }
 }
 

@@ -102,7 +102,7 @@ const AGENTS_BY_CATEGORY: Record<string, AgentInfo[]> = OCTAGON_AGENTS.reduce(
  * Populate the agents list with categories and agent cards.
  * This only builds the DOM once since the underlying data is static.
  */
-function createAgentExamplesFragment(): DocumentFragment {
+export function createAgentExamplesFragment(): DocumentFragment {
   const fragment = document.createDocumentFragment();
 
   // Create a list for the examples
@@ -173,5 +173,3 @@ function addAgentExamples(agent: AgentInfo, examplesList: HTMLElement) {
     examplesList.appendChild(exampleItem);
   });
 }
-
-export const AGENTS_EXAMPLES_FRAGMENT: DocumentFragment = createAgentExamplesFragment();
