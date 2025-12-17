@@ -13,7 +13,7 @@ const octagonApi = new OctagonApiService();
  * Call the Market Intelligence agent that routes to appropriate specialized agents
  * @customfunction AGENT
  * @param prompt The question or prompt for the Octagon agent
- * @param format optional with possible values of 'table' (default), 'cell', or 'raw'.
+ * @param format optional output format with possible values of 'table' (default), 'cell', or 'raw'.
  * @helpUrl https://docs.octagonagents.com/guide/agents/octagon-agent.html
  * @returns array of arrays of strings or numbers
  */
