@@ -156,6 +156,7 @@ export class OctagonApiService {
     const headers = new Headers({
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      "User-Agent": "Octagon-Excel-AddIn/1.2.0",
     });
 
     const response = await fetch(requestUrl, {
