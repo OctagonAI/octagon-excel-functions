@@ -9,7 +9,7 @@ import { getTextFormat, parseTextFormat } from "./format";
 import { AgentRequest, AgentResponse, AgentType, OutputFormat } from "./types";
 
 // API Configuration
-const DEFAULT_API_URL = "https://api-gateway.octagonagents.com";
+const DEFAULT_API_URL = "https://api.octagonai.co";
 
 // Storage key constants (used with OfficeRuntime.storage)
 const API_KEY_STORAGE_NAME = "octagon_api_key";
